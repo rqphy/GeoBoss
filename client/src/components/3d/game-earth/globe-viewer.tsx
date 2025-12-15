@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { GeoJSONLoader, type Feature } from "three-geojson"
 import Country from "./country"
-import * as THREE from "three"
+import { useControls } from "leva"
 
 // Color palette for countries
 const COUNTRY_COLORS = [
@@ -32,6 +32,27 @@ export default function GlobeViewer() {
 	const [features, setFeatures] = useState<Feature[]>([])
 	const [loading, setLoading] = useState(true)
 	const [hoveredCountry, setHoveredCountry] = useState<string | null>(null)
+
+	const { rotationX, rotationY, rotationZ } = useControls("Globe Rotation", {
+		rotationX: {
+			value: -Math.PI / 2,
+			min: -Math.PI,
+			max: Math.PI,
+			step: 0.01,
+		},
+		rotationY: {
+			value: 0,
+			min: -Math.PI,
+			max: Math.PI,
+			step: 0.01,
+		},
+		rotationZ: {
+			value: -Math.PI / 2,
+			min: -Math.PI,
+			max: Math.PI,
+			step: 0.01,
+		},
+	})
 
 	useEffect(() => {
 		const loader = new GeoJSONLoader()
@@ -65,18 +86,21 @@ export default function GlobeViewer() {
 	if (loading) {
 		return (
 			<mesh>
-				<sphereGeometry args={[100, 32, 32]} />
-				<meshStandardMaterial color={0x333333} wireframe />
+				<sphereGeometry args={[45, 32, 32]} />
+				<meshStandardMaterial color={0x468faf} wireframe />
 			</mesh>
 		)
 	}
 
 	return (
-		<group rotation={[-Math.PI / 2, 0, 0]} scale={[0.6, 0.6, 0.6]}>
+		<group
+			rotation={[rotationX, rotationY, rotationZ]}
+			scale={[0.45, 0.45, 0.45]}
+		>
 			{/* Base sphere (ocean) */}
 			<mesh>
 				<sphereGeometry args={[100, 100, 50]} />
-				<meshStandardMaterial color={0x1a5276} />
+				<meshStandardMaterial color={0x2a6f97} />
 			</mesh>
 
 			{/* Countries */}
