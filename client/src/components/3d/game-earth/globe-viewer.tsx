@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { GeoJSONLoader, type Feature } from "three-geojson"
 import Country from "./country"
+import Atmosphere from "./atmosphere"
 
 // Color palette for countries
 const COUNTRY_COLORS = [
@@ -75,7 +76,8 @@ export default function GlobeViewer() {
 			rotation={[-Math.PI / 2, 0, -Math.PI / 2]}
 			scale={[0.45, 0.45, 0.45]}
 		>
-			{/* Base sphere (ocean) */}
+			<Atmosphere radius={105} color="#2a6f97" />
+
 			<mesh>
 				<sphereGeometry args={[100, 100, 50]} />
 				<meshStandardMaterial color={0x2a6f97} />

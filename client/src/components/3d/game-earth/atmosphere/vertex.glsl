@@ -1,11 +1,12 @@
 varying vec3 vNormal;
 varying vec3 vPosition;
-varying vec3 vWorldPosition;
 
 void main() {
-    vNormal = normalize(normalMatrix * normal);
-    vPosition = (modelViewMatrix * vec4(position, 1.0)).xyz;
-    vWorldPosition = (modelMatrix * vec4(position, 1.0)).xyz;
-    
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+    gl_Position = projectionMatrix * viewMatrix * modelPosition;
+
+    vec3 modelNormal = (modelMatrix * vec4(normal, 0.0)).xyz;
+
+    vNormal = modelNormal;
+    vPosition = modelPosition.xyz;
 }
