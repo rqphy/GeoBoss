@@ -2,6 +2,7 @@ import { Link } from "react-router"
 import GlobeViewer from "@/components/3d/game-earth/globe-viewer"
 import { Canvas } from "@react-three/fiber"
 import { OrbitControls } from "@react-three/drei"
+import Hud from "@/components/hud/hud"
 
 export default function Lobby() {
 	return (
@@ -15,6 +16,7 @@ export default function Lobby() {
 					<OrbitControls />
 				</Canvas>
 			</div>
+			<Hud />
 		</>
 	)
 }
