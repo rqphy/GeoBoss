@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { Timer as TimerIcon } from "lucide-react"
 
 export default function Timer({
 	totalTime,
@@ -25,12 +26,11 @@ export default function Timer({
 
 	return (
 		<div className="text-background text-center">
-			<div>
-				<p className="font-family text-sm">
-					Round : {roundNumber} / 20
-				</p>
+			<p className="font-family text-sm">Round : {roundNumber} / 20</p>
+			<div className="flex justify-center items-center bg-background rounded-md text-foreground mt-2">
+				<TimerIcon className="w-6 h-6 inline mr-2" />
+				<p className="font-family-secondary text-2xl">{timeLeft}</p>
 			</div>
-			<p className="font-family text-2xl mt-2">{timeLeft}</p>
 		</div>
 	)
 }
