@@ -10,7 +10,7 @@ export default function Hud() {
 			</div>
 
 			<div className="absolute top-10 left-1/2 transform -translate-x-1/2">
-				<Timer time={20} roundNumber={1} />
+				<Timer totalTime={20} roundNumber={1} />
 			</div>
 
 			<div className="absolute bottom-10 left-1/2 transform -translate-x-1/2">
