@@ -4,9 +4,23 @@ import { MOCK_PLAYERS } from "@/mocks/data"
 import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useParams } from "react-router"
+import { Check, Copy } from "lucide-react"
+import { useState } from "react"
 
 export default function LobbyRoom() {
 	const { roomId } = useParams<{ roomId: string }>()
+	const [copied, setCopied] = useState(false)
+
+	const handleCopyUrl = async () => {
+		try {
+			const url = window.location.href
+			await navigator.clipboard.writeText(url)
+			setCopied(true)
+			setTimeout(() => setCopied(false), 2000)
+		} catch (err) {
+			console.error("Failed to copy URL:", err)
+		}
+	}
 
 	return (
 		<>
@@ -32,7 +46,23 @@ export default function LobbyRoom() {
 					<h2 className="text-2xl text-secondary font-bold">
 						{roomId}
 					</h2>
-					<Button variant="secondary">Copier le code</Button>
+					<Button
+						variant="secondary"
+						onClick={handleCopyUrl}
+						className="gap-2"
+					>
+						{copied ? (
+							<>
+								<Check className="w-4 h-4" />
+								Copié !
+							</>
+						) : (
+							<>
+								<Copy className="w-4 h-4" />
+								Copier le code
+							</>
+						)}
+					</Button>
 				</CardHeader>
 			</Card>
 			<LobbyControls />
