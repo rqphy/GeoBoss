@@ -2,12 +2,48 @@ import type { Player, Room, Question } from "@/types/game"
 
 // Mock Players
 export const MOCK_PLAYERS: Player[] = [
-	{ name: "Alice", score: 1200, color: "#FF5733", hasFoundAnswer: true },
-	{ name: "Bob", score: 850, color: "#33FF57", hasFoundAnswer: false },
-	{ name: "Charlie", score: 1500, color: "#3357FF", hasFoundAnswer: true },
-	{ name: "David", score: 600, color: "#F333FF", hasFoundAnswer: false },
-	{ name: "Emma", score: 950, color: "#FFD700", hasFoundAnswer: true },
-	{ name: "Frank", score: 1100, color: "#FF1493", hasFoundAnswer: false },
+	{
+		id: "345678",
+		name: "Alice",
+		score: 1200,
+		color: "#FF5733",
+		hasFoundAnswer: true,
+	},
+	{
+		id: "234241",
+		name: "Bob",
+		score: 850,
+		color: "#33FF57",
+		hasFoundAnswer: false,
+	},
+	{
+		id: "513212",
+		name: "Charlie",
+		score: 1500,
+		color: "#3357FF",
+		hasFoundAnswer: true,
+	},
+	{
+		id: "123456",
+		name: "David",
+		score: 600,
+		color: "#F333FF",
+		hasFoundAnswer: false,
+	},
+	{
+		id: "634512",
+		name: "Emma",
+		score: 950,
+		color: "#FFD700",
+		hasFoundAnswer: true,
+	},
+	{
+		id: "313313",
+		name: "Frank",
+		score: 1100,
+		color: "#FF1493",
+		hasFoundAnswer: false,
+	},
 ]
 
 // Mock Rooms
