@@ -15,6 +15,8 @@ export const SOCKET_EVENTS = {
 	NEW_ROUND: "new_round",
 	END_ROUND: "end_round",
     SUBMIT_ANSWER: "submit_answer",
+    GOOD_ANSWER: "good_answer",
+    BAD_ANSWER: "bad_answer",
     
     ERROR: "error"
 }

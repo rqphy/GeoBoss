@@ -84,6 +84,14 @@ export class GameRoom {
 		if (isCorrect) {
 			const points = calculateScore(this.roundTimeSeconds)
 			player.score += points
+            this.io.to(this.id).emit(SOCKET_EVENTS.GOOD_ANSWER, {
+                playerId,
+                score: player.score,
+            })
+		} else {
+            this.io.to(this.id).emit(SOCKET_EVENTS.BAD_ANSWER, {
+                playerId,
+            })
 		}
 	}
 
