@@ -4,7 +4,7 @@ import { GameRoom } from "../game/game-room.js"
 import type { Player } from "../types/index.js"
 import {
 	rooms,
-	PLAYER_COLORS,
+	getAvailableColor,
 	findPlayerRoom,
 	handlePlayerRemoval,
 } from "./room-utils.js"
@@ -18,8 +18,7 @@ export function initializeSocketHandlers(io: Server) {
 			const room = new GameRoom(io)
 			rooms.set(room.id, room)
 
-			const color: string =
-				PLAYER_COLORS[Math.floor(Math.random() * PLAYER_COLORS.length)]!
+			const color: string = getAvailableColor(room)
 
 			const player: Player = {
 				id: socket.id,
@@ -59,10 +58,7 @@ export function initializeSocketHandlers(io: Server) {
 					return
 				}
 
-				const color: string =
-					PLAYER_COLORS[
-						Math.floor(Math.random() * PLAYER_COLORS.length)
-					]!
+				const color: string = getAvailableColor(room)
 
 				const player: Player = {
 					id: socket.id,

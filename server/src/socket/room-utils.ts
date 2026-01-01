@@ -27,6 +27,25 @@ export function findPlayerRoom(
 	return null
 }
 
+// Helper function to get an available color for a new player
+export function getAvailableColor(room: GameRoom): string {
+	const players = room.getState().players
+	const usedColors = new Set(players.map((p) => p.color))
+
+	// Find the first available color
+	const availableColor = PLAYER_COLORS.find((color) => !usedColors.has(color))
+
+	// If all colors are taken, generate a random color
+	if (!availableColor) {
+		// Generate a random color
+		return `#${Math.floor(Math.random() * 16777215)
+			.toString(16)
+			.padStart(6, "0")}`
+	}
+
+	return availableColor
+}
+
 // Helper function to handle player removal from a room
 export function handlePlayerRemoval(
 	io: Server,
