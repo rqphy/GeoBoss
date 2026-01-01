@@ -77,16 +77,30 @@ export function SocketProvider({ children }: SocketProviderProps) {
 					setPlayersList(room.players)
 				} else {
 					setPlayersList((prevPlayers) => [...prevPlayers, player])
-					console.log("player joined")
 				}
 			}
 		)
 
-		socket.on(SOCKET_EVENTS.PLAYER_LEFT, (playerId: string) => {
-			setPlayersList((prevPlayers) =>
-				prevPlayers.filter((p) => p.id !== playerId)
-			)
-		})
+		socket.on(
+			SOCKET_EVENTS.PLAYER_LEFT,
+			({
+				playerId,
+				players,
+				newAdminId,
+			}: {
+				playerId: string
+				players: Player[]
+				newAdminId: string | undefined
+			}) => {
+				setPlayersList(players)
+
+				if (newAdminId && currentPlayer?.id === playerId) {
+					setCurrentPlayer((prev) =>
+						prev ? { ...prev, isAdmin: true } : null
+					)
+				}
+			}
+		)
 
 		socket.on(
 			SOCKET_EVENTS.ROOM_CREATED,
@@ -175,10 +189,14 @@ export function SocketProvider({ children }: SocketProviderProps) {
 			socket.emit(SOCKET_EVENTS.JOIN_ROOM, { roomId, playerName })
 		},
 		leaveRoom(roomId: string) {
-			socket.emit(SOCKET_EVENTS.LEAVE_ROOM, { roomId })
+			socket.emit(SOCKET_EVENTS.LEAVE_ROOM, roomId)
+			// Clear local state
+			setRoomId("")
+			setPlayersList([])
+			setCurrentPlayer(null)
 		},
 		startGame() {
-			socket.emit(SOCKET_EVENTS.START_GAME, { roomId })
+			socket.emit(SOCKET_EVENTS.START_GAME, roomId)
 		},
 		submitAnswer(answer: string) {
 			socket.emit(SOCKET_EVENTS.SUBMIT_ANSWER, { roomId, answer })

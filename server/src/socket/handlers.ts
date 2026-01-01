@@ -2,30 +2,12 @@ import { Server, Socket } from "socket.io"
 import { SOCKET_EVENTS } from "./events.js"
 import { GameRoom } from "../game/game-room.js"
 import type { Player } from "../types/index.js"
-
-const rooms = new Map<string, GameRoom>()
-const PLAYER_COLORS = [
-	"#FF5733", // Red-Orange
-	"#33FF57", // Green
-	"#3357FF", // Blue
-	"#F333FF", // Magenta
-	"#FFD700", // Gold
-	"#FF1493", // Deep Pink
-	"#00CED1", // Dark Turquoise
-	"#FF8C00", // Dark Orange
-]
-
-// Helper function to find which room a player is in
-function findPlayerRoom(
-	playerId: string
-): { room: GameRoom; roomId: string } | null {
-	for (const [roomId, room] of rooms.entries()) {
-		if (room.hasPlayer(playerId)) {
-			return { room, roomId }
-		}
-	}
-	return null
-}
+import {
+	rooms,
+	PLAYER_COLORS,
+	findPlayerRoom,
+	handlePlayerRemoval,
+} from "./room-utils.js"
 
 export function initializeSocketHandlers(io: Server) {
 	io.on(SOCKET_EVENTS.CONNECTION, (socket: Socket) => {
@@ -49,8 +31,6 @@ export function initializeSocketHandlers(io: Server) {
 
 			room.addPlayer(player)
 			socket.join(room.id)
-
-			console.log("Room created:", room.id)
 
 			socket.emit(SOCKET_EVENTS.ROOM_CREATED, {
 				roomId: room.id,
@@ -99,7 +79,6 @@ export function initializeSocketHandlers(io: Server) {
 					player,
 					room: room.getState(),
 				})
-				console.log("Player joined:", player, room.getState())
 				socket.to(roomId).emit(SOCKET_EVENTS.PLAYER_JOINED, {
 					player,
 				})
@@ -107,6 +86,13 @@ export function initializeSocketHandlers(io: Server) {
 		)
 
 		// TODO: leave room handler
+		socket.on(SOCKET_EVENTS.LEAVE_ROOM, (roomId: string) => {
+			const room = rooms.get(roomId)
+			if (!room) return
+
+			socket.leave(roomId)
+			handlePlayerRemoval(io, socket.id, roomId, room)
+		})
 
 		// Start game
 		socket.on(SOCKET_EVENTS.START_GAME, (roomId: string) => {
@@ -139,25 +125,7 @@ export function initializeSocketHandlers(io: Server) {
 			if (!playerRoom) return
 
 			const { room, roomId } = playerRoom
-			const player = room.getPlayer(socket.id)
-			const wasAdmin = player?.isAdmin || false
-
-			room.removePlayer(socket.id)
-			io.to(roomId).emit(SOCKET_EVENTS.PLAYER_LEFT, {
-				playerId: socket.id,
-				isAdmin: wasAdmin,
-			})
-
-			// Clean up empty room or reassign admin
-			if (room.isEmpty()) {
-				rooms.delete(roomId)
-			} else if (wasAdmin) {
-				const remainingPlayers = room.getState().players
-				const nextAdmin = remainingPlayers[0]
-				if (nextAdmin) {
-					room.updateAdmin(nextAdmin.id)
-				}
-			}
+			handlePlayerRemoval(io, socket.id, roomId, room)
 		})
 	})
 }
