@@ -1,12 +1,12 @@
 import { createContext, useContext, useEffect, useState } from "react"
 import { Socket, io } from "socket.io-client"
 import { SOCKET_EVENTS } from "../socket/events.ts"
-import type { Player } from "../types/game.ts"
+import type { Player, GameState } from "../types/game.ts"
 
 interface SocketProviderMethods {
 	createRoom: (playerName: string) => void
 	joinRoom: (playerName: string, roomId: string) => void
-	leaveRoom: () => void
+	leaveRoom: (roomId: string) => void
 
 	startGame: () => void
 	submitAnswer: (answer: string) => void
@@ -54,9 +54,19 @@ export function SocketProvider({ children }: SocketProviderProps) {
 			setIsConnected(false)
 		})
 
-		socket.on(SOCKET_EVENTS.PLAYER_JOINED, (player: Player) => {
-			setPlayersList((prevPlayers) => [...prevPlayers, player])
-		})
+		socket.on(
+			SOCKET_EVENTS.PLAYER_JOINED,
+			({ player, room }: { player: Player; room: GameState }) => {
+				if (room) {
+					setRoomId(room.roomId)
+					setIsGameStarted(room.isGameStarted)
+					setCurrentRound(room.currentRound)
+					setPlayersList(room.players)
+				} else {
+					setPlayersList((prevPlayers) => [...prevPlayers, player])
+				}
+			}
+		)
 
 		socket.on(SOCKET_EVENTS.PLAYER_LEFT, (playerId: string) => {
 			setPlayersList((prevPlayers) =>
@@ -69,6 +79,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
 			({ roomId, player }: { roomId: string; player: Player }) => {
 				setRoomId(roomId)
 				setCurrentPlayer(player)
+				// update player list ?
 				// redirect to /lobby/roomid
 			}
 		)
@@ -140,8 +151,8 @@ export function SocketProvider({ children }: SocketProviderProps) {
 		joinRoom(roomId: string, playerName: string) {
 			socket.emit(SOCKET_EVENTS.JOIN_ROOM, { roomId, playerName })
 		},
-		leaveRoom() {
-			socket.emit(SOCKET_EVENTS.LEAVE_ROOM)
+		leaveRoom(roomId: string) {
+			socket.emit(SOCKET_EVENTS.LEAVE_ROOM, { roomId })
 		},
 		startGame() {
 			socket.emit(SOCKET_EVENTS.START_GAME, { roomId })

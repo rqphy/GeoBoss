@@ -38,6 +38,12 @@ export class GameRoom {
 		return this.players.get(playerId)
 	}
 
+	updateAdmin(playerId: string) {
+		const player = this.getPlayer(playerId)
+		if(!player) return
+		player.isAdmin = true
+	}
+
 	hasPlayer(playerId: string): boolean {
 		return this.players.has(playerId)
 	}

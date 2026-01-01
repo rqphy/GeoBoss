@@ -5,6 +5,18 @@ import type { Player } from "../types/index.js"
 
 const rooms = new Map<string, GameRoom>()
 
+// Helper function to find which room a player is in
+function findPlayerRoom(
+	playerId: string
+): { room: GameRoom; roomId: string } | null {
+	for (const [roomId, room] of rooms.entries()) {
+		if (room.hasPlayer(playerId)) {
+			return { room, roomId }
+		}
+	}
+	return null
+}
+
 export function initializeSocketHandlers(io: Server) {
 	io.on(SOCKET_EVENTS.CONNECTION, (socket: Socket) => {
 		console.log("Client connected:", socket.id)
@@ -33,7 +45,13 @@ export function initializeSocketHandlers(io: Server) {
 		// Join room
 		socket.on(
 			SOCKET_EVENTS.JOIN_ROOM,
-			(roomId: string, playerName: string) => {
+			({
+				roomId,
+				playerName,
+			}: {
+				roomId: string
+				playerName: string
+			}) => {
 				const room = rooms.get(roomId)
 				if (!room) {
 					socket.emit(SOCKET_EVENTS.ERROR, "Room not found")
@@ -66,39 +84,58 @@ export function initializeSocketHandlers(io: Server) {
 			}
 		)
 
+		// TODO: leave room handler
+
 		// Start game
-        socket.on(SOCKET_EVENTS.START_GAME, (roomId: string) => {
-            const room = rooms.get(roomId)
-            if(!room) return
+		socket.on(SOCKET_EVENTS.START_GAME, (roomId: string) => {
+			const room = rooms.get(roomId)
+			if (!room) return
 
-            const admin = room.getPlayer(socket.id)
-            if(!admin || !admin.isAdmin) {
-                socket.emit(SOCKET_EVENTS.ERROR, "You are not the admin")
-                return
-            }
+			const admin = room.getPlayer(socket.id)
+			if (!admin || !admin.isAdmin) {
+				socket.emit(SOCKET_EVENTS.ERROR, "You are not the admin")
+				return
+			}
 
-            room.startGame()
-        })
+			room.startGame()
+		})
 
 		// Submit answer
-        socket.on(SOCKET_EVENTS.SUBMIT_ANSWER, (roomId: string, answer: string) => {
-            const room = rooms.get(roomId)
-            if(!room) return
+		socket.on(
+			SOCKET_EVENTS.SUBMIT_ANSWER,
+			({ roomId, answer }: { roomId: string; answer: string }) => {
+				const room = rooms.get(roomId)
+				if (!room) return
 
-            room.submitAnswer(socket.id, answer)
-        })
+				room.submitAnswer(socket.id, answer)
+			}
+		)
 
-		io.on(SOCKET_EVENTS.DISCONNECTION, (socket: Socket) => {
-			rooms.forEach((room, roomId) => {
-				if (room.hasPlayer(socket.id)) {
-					room.removePlayer(socket.id)
-					io.to(roomId).emit(SOCKET_EVENTS.PLAYER_LEFT, socket.id)
+		// Disconnect handler
+		socket.on(SOCKET_EVENTS.DISCONNECTION, () => {
+			const playerRoom = findPlayerRoom(socket.id)
+			if (!playerRoom) return
 
-					if (room.isEmpty()) {
-						rooms.delete(roomId)
-					}
-				}
+			const { room, roomId } = playerRoom
+			const player = room.getPlayer(socket.id)
+			const wasAdmin = player?.isAdmin || false
+
+			room.removePlayer(socket.id)
+			io.to(roomId).emit(SOCKET_EVENTS.PLAYER_LEFT, {
+				playerId: socket.id,
+				isAdmin: wasAdmin,
 			})
+
+			// Clean up empty room or reassign admin
+			if (room.isEmpty()) {
+				rooms.delete(roomId)
+			} else if (wasAdmin) {
+				const remainingPlayers = room.getState().players
+				const nextAdmin = remainingPlayers[0]
+				if (nextAdmin) {
+					room.updateAdmin(nextAdmin.id)
+				}
+			}
 		})
 	})
 }

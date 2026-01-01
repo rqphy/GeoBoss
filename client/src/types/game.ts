@@ -21,3 +21,12 @@ export type Question = {
 	options: string[]
 	correctAnswer: string
 }
+
+export type GameState = {
+	roomId: string
+	players: Player[]
+	currentRound: number
+	maxRounds: number
+	isGameStarted: boolean
+}
+	
