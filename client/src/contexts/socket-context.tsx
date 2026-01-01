@@ -26,9 +26,21 @@ interface SocketProviderProps {
 }
 
 interface SocketContextValue {
-	socket: Socket
-	methods: SocketProviderMethods
-	state: SocketStates
+	// States
+	isConnected: boolean
+	roomId: string
+	playersList: Player[]
+	isGameStarted: boolean
+	currentRound: number
+	currentPlayer: Player | null
+
+	// Methods
+	createRoom: (playerName: string) => void
+	joinRoom: (playerName: string, roomId: string) => void
+	leaveRoom: (roomId: string) => void
+
+	startGame: () => void
+	submitAnswer: (answer: string) => void
 }
 
 const socketContext = createContext<SocketContextValue | null>(null)
@@ -49,6 +61,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
 	useEffect(() => {
 		socket.on("connect", () => {
 			setIsConnected(true)
+			console.log("connected")
 		})
 		socket.on(SOCKET_EVENTS.DISCONNECTION, () => {
 			setIsConnected(false)
@@ -86,6 +99,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
 
 		socket.on(SOCKET_EVENTS.GAME_STARTED, () => {
 			setIsGameStarted(true)
+			setCurrentRound(1)
 		})
 
 		socket.on(SOCKET_EVENTS.END_GAME, () => {
@@ -107,18 +121,18 @@ export function SocketProvider({ children }: SocketProviderProps) {
 			}
 		)
 
-		socket.on(
-			SOCKET_EVENTS.END_ROUND,
-			({
-				correctAnswer,
-				scores,
-			}: {
-				correctAnswer: string
-				scores: { id: string; name: string; score: number }[]
-			}) => {
-				// TODO: update players list
-			}
-		)
+		// socket.on(
+		// 	SOCKET_EVENTS.END_ROUND,
+		// 	({
+		// 		correctAnswer,
+		// 		scores,
+		// 	}: {
+		// 		correctAnswer: string
+		// 		scores: { id: string; name: string; score: number }[]
+		// 	}) => {
+		// 		// TODO: update players list
+		// 	}
+		// )
 
 		socket.on(
 			SOCKET_EVENTS.GOOD_ANSWER,
@@ -172,7 +186,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
 	}
 
 	return (
-		<socketContext.Provider value={{ socket, methods, state }}>
+		<socketContext.Provider value={{ ...methods, ...state }}>
 			{children}
 		</socketContext.Provider>
 	)

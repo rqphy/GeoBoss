@@ -36,6 +36,8 @@ export function initializeSocketHandlers(io: Server) {
 			room.addPlayer(player)
 			socket.join(room.id)
 
+			console.log("Room created:", room.id)
+
 			socket.emit(SOCKET_EVENTS.ROOM_CREATED, {
 				roomId: room.id,
 				player,

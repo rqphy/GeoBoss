@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router"
 import {
 	Dialog,
@@ -10,6 +10,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { GamepadIcon } from "lucide-react"
+import { useSocket } from "@/contexts/socket-context"
 
 interface CreateRoomModalProps {
 	open: boolean
@@ -23,6 +24,14 @@ export default function CreateRoomModal({
 	const [username, setUsername] = useState("")
 	const [error, setError] = useState("")
 	const navigate = useNavigate()
+	const { roomId, createRoom } = useSocket()
+
+	useEffect(() => {
+		if (roomId) {
+			onOpenChange(false)
+			navigate(`/lobby/${roomId}`)
+		}
+	}, [roomId])
 
 	const handleCreateRoom = () => {
 		// Validate username
@@ -41,13 +50,7 @@ export default function CreateRoomModal({
 			return
 		}
 
-		// Generate a unique room ID (6 characters)
-		const roomId = Math.random().toString(36).substring(2, 8).toUpperCase()
-
-		// Navigate to lobby with username in state
-		navigate(`/lobby/${roomId}`, {
-			state: { username: username.trim() },
-		})
+		createRoom(username.trim())
 
 		// Reset form
 		setUsername("")
