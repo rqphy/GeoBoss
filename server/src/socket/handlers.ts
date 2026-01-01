@@ -4,6 +4,16 @@ import { GameRoom } from "../game/game-room.js"
 import type { Player } from "../types/index.js"
 
 const rooms = new Map<string, GameRoom>()
+const PLAYER_COLORS = [
+	"#FF5733", // Red-Orange
+	"#33FF57", // Green
+	"#3357FF", // Blue
+	"#F333FF", // Magenta
+	"#FFD700", // Gold
+	"#FF1493", // Deep Pink
+	"#00CED1", // Dark Turquoise
+	"#FF8C00", // Dark Orange
+]
 
 // Helper function to find which room a player is in
 function findPlayerRoom(
@@ -26,11 +36,15 @@ export function initializeSocketHandlers(io: Server) {
 			const room = new GameRoom(io)
 			rooms.set(room.id, room)
 
+			const color: string =
+				PLAYER_COLORS[Math.floor(Math.random() * PLAYER_COLORS.length)]!
+
 			const player: Player = {
 				id: socket.id,
 				name: playerName,
 				score: 0,
 				isAdmin: true,
+				color,
 			}
 
 			room.addPlayer(player)

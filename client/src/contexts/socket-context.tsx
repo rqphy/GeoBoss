@@ -92,8 +92,8 @@ export function SocketProvider({ children }: SocketProviderProps) {
 			({ roomId, player }: { roomId: string; player: Player }) => {
 				setRoomId(roomId)
 				setCurrentPlayer(player)
-				// update player list ?
-				// redirect to /lobby/roomid
+				setPlayersList([player])
+				console.log("playersList", playersList)
 			}
 		)
 
@@ -160,7 +160,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
 
 	const methods: SocketProviderMethods = {
 		createRoom(playerName: string) {
-			socket.emit(SOCKET_EVENTS.CREATE_ROOM, { playerName })
+			socket.emit(SOCKET_EVENTS.CREATE_ROOM, playerName)
 		},
 		joinRoom(roomId: string, playerName: string) {
 			socket.emit(SOCKET_EVENTS.JOIN_ROOM, { roomId, playerName })

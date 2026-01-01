@@ -1,14 +1,13 @@
 import PlayerCard from "./player-card"
 import LobbyControls from "./lobby-controls"
-import { MOCK_PLAYERS } from "@/mocks/data"
-import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card"
+import { Card, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { useParams } from "react-router"
 import { Check, Copy } from "lucide-react"
 import { useState } from "react"
+import { useSocket } from "@/contexts/socket-context"
 
 export default function LobbyRoom() {
-	const { roomId } = useParams<{ roomId: string }>()
+	const { roomId, playersList } = useSocket()
 	const [copied, setCopied] = useState(false)
 
 	const handleCopyUrl = async () => {
@@ -27,16 +26,16 @@ export default function LobbyRoom() {
 			<Card className="bg-background/5 border-secondary/20 backdrop-blur-sm text-center p-4">
 				<CardHeader>
 					<h2 className="text-2xl text-secondary font-bold">
-						Joueurs {MOCK_PLAYERS.length}/8
+						Joueurs {playersList.length}/8
 					</h2>
 				</CardHeader>
 				<ul className="grid grid-cols-2 gap-2">
-					{MOCK_PLAYERS.map((player) => (
+					{playersList.map((player) => (
 						<li key={player.id}>
 							<PlayerCard
 								player={player}
-								isYou={player.id === MOCK_PLAYERS[0].id}
-								isHost={player.id === MOCK_PLAYERS[0].id}
+								isYou={player.id === playersList[0].id}
+								isHost={player.id === playersList[0].id}
 							/>
 						</li>
 					))}

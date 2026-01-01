@@ -3,6 +3,7 @@ export interface Player {
 	name: string
 	score: number
 	isAdmin: boolean
+	color: string
 }
 
 export interface GameState {
