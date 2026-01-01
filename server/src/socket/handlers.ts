@@ -79,11 +79,15 @@ export function initializeSocketHandlers(io: Server) {
 					return
 				}
 
+				const color: string =
+				PLAYER_COLORS[Math.floor(Math.random() * PLAYER_COLORS.length)]!
+
 				const player: Player = {
 					id: socket.id,
 					name: playerName,
 					score: 0,
 					isAdmin: false,
+					color,
 				}
 
 				room.addPlayer(player)
