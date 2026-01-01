@@ -23,7 +23,7 @@ export default function LobbyRoom() {
 
 	return (
 		<>
-			<Card className="bg-background/5 border-secondary/20 backdrop-blur-sm text-center p-4">
+			<Card className="bg-background/5 border-secondary/20 backdrop-blur-sm text-center p-4 gap-3">
 				<CardHeader>
 					<h2 className="text-2xl text-secondary font-bold">
 						Joueurs {playersList.length}/8
@@ -41,7 +41,7 @@ export default function LobbyRoom() {
 					))}
 				</ul>
 			</Card>
-			<Card className="absolute top-0 -left-full w-[200px] bg-background/5 border-secondary/20 backdrop-blur-sm text-center p-4">
+			<Card className="absolute top-0 -left-full w-[220px] bg-background/5 border-secondary/20 backdrop-blur-sm text-center px-2 py-4">
 				<CardHeader>
 					<h2 className="text-2xl text-secondary font-bold">
 						{roomId}
