@@ -75,6 +75,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
 					setIsGameStarted(room.isGameStarted)
 					setCurrentRound(room.currentRound)
 					setPlayersList(room.players)
+					setCurrentPlayer(player)
 				} else {
 					setPlayersList((prevPlayers) => [...prevPlayers, player])
 				}

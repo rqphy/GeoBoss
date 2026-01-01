@@ -7,7 +7,7 @@ import { useState } from "react"
 import { useSocket } from "@/contexts/socket-context"
 
 export default function LobbyRoom() {
-	const { roomId, playersList } = useSocket()
+	const { roomId, playersList, currentPlayer } = useSocket()
 	const [copied, setCopied] = useState(false)
 
 	const handleCopyUrl = async () => {
@@ -34,8 +34,8 @@ export default function LobbyRoom() {
 						<li key={player.id}>
 							<PlayerCard
 								player={player}
-								isYou={player.id === playersList[0].id}
-								isHost={player.id === playersList[0].id}
+								isYou={player.id === currentPlayer?.id}
+								isHost={player.isAdmin}
 							/>
 						</li>
 					))}

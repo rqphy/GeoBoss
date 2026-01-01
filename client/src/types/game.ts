@@ -3,7 +3,7 @@ export type Player = {
 	name: string
 	score: number
 	color: string
-	hasFoundAnswer: boolean
+	isAdmin: boolean
 }
 
 export type Room = {
@@ -29,4 +29,3 @@ export type GameState = {
 	maxRounds: number
 	isGameStarted: boolean
 }
-	
