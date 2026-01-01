@@ -21,10 +21,8 @@ import {
 	AlertTriangle,
 	HelpCircle,
 	Quote,
-	UsersIcon,
 } from "lucide-react"
 import CreateRoomModal from "@/components/create-room-modal"
-import JoinRoomModal from "@/components/join-room-modal"
 import { TUTORIAL_CARDS, FAQ_ITEMS, REVIEWS } from "@/constants/homepage"
 
 export default function Home() {
@@ -55,44 +53,24 @@ export default function Home() {
 					<h1 className="text-8xl md:text-8xl uppercase font-family font-light text-secondary">
 						GEOQUIZ
 					</h1>
-					<div className="flex flex-col sm:flex-row gap-4 mt-9">
-						<Button
-							variant="secondary"
-							className="hover:cursor-pointer"
-							disabled={!isConnected}
-							onClick={() => setIsCreateModalOpen(true)}
-						>
-							{isConnected ? (
-								<>
-									Créer une partie
-									<Gamepad2Icon />
-								</>
-							) : (
-								<>
-									Connexion au serveur...
-									<Loader2 className="animate-spin" />
-								</>
-							)}
-						</Button>
-						<Button
-							variant="secondary"
-							className="hover:cursor-pointer"
-							disabled={!isConnected}
-							onClick={() => setIsJoinModalOpen(true)}
-						>
-							{isConnected ? (
-								<>
-									Rejoindre une partie
-									<UsersIcon />
-								</>
-							) : (
-								<>
-									Connexion au serveur...
-									<Loader2 className="animate-spin" />
-								</>
-							)}
-						</Button>
-					</div>
+					<Button
+						variant="secondary"
+						className="hover:cursor-pointer mt-9"
+						disabled={!isConnected}
+						onClick={() => setIsCreateModalOpen(true)}
+					>
+						{isConnected ? (
+							<>
+								Créer une partie
+								<Gamepad2Icon />
+							</>
+						) : (
+							<>
+								Connexion au serveur...
+								<Loader2 className="animate-spin" />
+							</>
+						)}
+					</Button>
 				</div>
 
 				<div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 animate-bounce">
@@ -218,10 +196,6 @@ export default function Home() {
 			<CreateRoomModal
 				open={isCreateModalOpen}
 				onOpenChange={setIsCreateModalOpen}
-			/>
-			<JoinRoomModal
-				open={isJoinModalOpen}
-				onOpenChange={setIsJoinModalOpen}
 			/>
 		</>
 	)
