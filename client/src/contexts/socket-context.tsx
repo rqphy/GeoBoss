@@ -77,6 +77,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
 					setPlayersList(room.players)
 				} else {
 					setPlayersList((prevPlayers) => [...prevPlayers, player])
+					console.log("player joined")
 				}
 			}
 		)
@@ -153,8 +154,16 @@ export function SocketProvider({ children }: SocketProviderProps) {
 		)
 
 		return () => {
-			socket.off(SOCKET_EVENTS.CONNECTION)
+			socket.off("connect")
 			socket.off(SOCKET_EVENTS.DISCONNECTION)
+			socket.off(SOCKET_EVENTS.PLAYER_JOINED)
+			socket.off(SOCKET_EVENTS.PLAYER_LEFT)
+			socket.off(SOCKET_EVENTS.ROOM_CREATED)
+			socket.off(SOCKET_EVENTS.GAME_STARTED)
+			socket.off(SOCKET_EVENTS.END_GAME)
+			socket.off(SOCKET_EVENTS.NEW_ROUND)
+			socket.off(SOCKET_EVENTS.GOOD_ANSWER)
+			socket.off(SOCKET_EVENTS.BAD_ANSWER)
 		}
 	}, [])
 

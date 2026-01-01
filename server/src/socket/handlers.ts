@@ -80,7 +80,9 @@ export function initializeSocketHandlers(io: Server) {
 				}
 
 				const color: string =
-				PLAYER_COLORS[Math.floor(Math.random() * PLAYER_COLORS.length)]!
+					PLAYER_COLORS[
+						Math.floor(Math.random() * PLAYER_COLORS.length)
+					]!
 
 				const player: Player = {
 					id: socket.id,
@@ -97,7 +99,7 @@ export function initializeSocketHandlers(io: Server) {
 					player,
 					room: room.getState(),
 				})
-
+				console.log("Player joined:", player, room.getState())
 				socket.to(roomId).emit(SOCKET_EVENTS.PLAYER_JOINED, {
 					player,
 				})
