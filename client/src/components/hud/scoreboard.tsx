@@ -1,9 +1,9 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
-import { MOCK_PLAYERS } from "@/mocks/data"
+import type { Player } from "@/types/game"
 
-export default function Scoreboard() {
+export default function Scoreboard({ playersList }: { playersList: Player[] }) {
 	const [isExpanded, setIsExpanded] = useState(true)
 
 	return (
@@ -15,27 +15,29 @@ export default function Scoreboard() {
 			<h2 className="text-foreground text-md font-bold mb-2">
 				Scoreboard
 			</h2>
-			{MOCK_PLAYERS.sort((a, b) => b.score - a.score).map((player) => (
-				<div
-					key={player.name}
-					className="flex justify-between items-center gap-2 p-2 rounded transition-colors duration-300"
-					style={{
-						backgroundColor: player.hasFoundAnswer
-							? `${player.color}40` // 25% opacity (hex 40) for desaturated look
-							: "transparent",
-					}}
-				>
-					<span
-						className="font-semibold text-sm"
-						style={{ color: player.color }}
+			{playersList
+				.sort((a, b) => b.score - a.score)
+				.map((player) => (
+					<div
+						key={player.name}
+						className="flex justify-between items-center gap-2 p-2 rounded transition-colors duration-300"
+						style={{
+							backgroundColor: player.hasFoundAnswer
+								? `${player.color}40` // 25% opacity (hex 40) for desaturated look
+								: "transparent",
+						}}
 					>
-						{player.name}
-					</span>
-					<span className="text-foreground font-mono text-sm">
-						{player.score}
-					</span>
-				</div>
-			))}
+						<span
+							className="font-semibold text-sm"
+							style={{ color: player.color }}
+						>
+							{player.name}
+						</span>
+						<span className="text-foreground font-mono text-sm">
+							{player.score}
+						</span>
+					</div>
+				))}
 
 			<Button
 				variant="secondary"

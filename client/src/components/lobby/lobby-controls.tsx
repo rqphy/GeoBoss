@@ -13,7 +13,7 @@ export default function LobbyControls() {
 	}
 
 	const handleStartGame = () => {
-		if (currentPlayer?.isAdmin && playersList.length >= 2) {
+		if (currentPlayer?.isAdmin) {
 			startGame()
 		}
 	}

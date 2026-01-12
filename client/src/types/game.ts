@@ -4,6 +4,7 @@ export type Player = {
 	score: number
 	color: string
 	isAdmin: boolean
+	hasFoundAnswer: boolean
 }
 
 export type Room = {

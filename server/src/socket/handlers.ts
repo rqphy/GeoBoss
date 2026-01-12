@@ -108,6 +108,7 @@ export function initializeSocketHandlers(io: Server) {
 		socket.on(
 			SOCKET_EVENTS.SUBMIT_ANSWER,
 			({ roomId, answer }: { roomId: string; answer: string }) => {
+				console.log("Answer submitted:", socket.id, answer)
 				const room = rooms.get(roomId)
 				if (!room) return
 

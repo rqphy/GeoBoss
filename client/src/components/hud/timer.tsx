@@ -11,7 +11,7 @@ export default function Timer({
 
 	useEffect(() => {
 		setTimeLeft(totalTime)
-	}, [totalTime])
+	}, [totalTime, roundNumber])
 
 	useEffect(() => {
 		if (timeLeft <= 0) return

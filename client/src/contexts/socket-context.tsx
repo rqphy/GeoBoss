@@ -19,6 +19,7 @@ interface SocketStates {
 	isGameStarted: boolean
 	currentRound: number
 	currentPlayer: Player | null
+	timeLimit: number
 }
 
 interface SocketProviderProps {
@@ -33,6 +34,7 @@ interface SocketContextValue {
 	isGameStarted: boolean
 	currentRound: number
 	currentPlayer: Player | null
+	timeLimit: number
 
 	// Methods
 	createRoom: (playerName: string) => void
@@ -57,6 +59,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
 	const [isGameStarted, setIsGameStarted] = useState<boolean>(false)
 	const [currentRound, setCurrentRound] = useState<number>(0)
 	const [currentPlayer, setCurrentPlayer] = useState<Player | null>(null)
+	const [timeLimit, setTimeLimit] = useState<number>(0)
 
 	useEffect(() => {
 		socket.on("connect", () => {
@@ -133,6 +136,14 @@ export function SocketProvider({ children }: SocketProviderProps) {
 				timeLimit: number
 			}) => {
 				setCurrentRound(round)
+				setTimeLimit(timeLimit)
+				setPlayersList((prevPlayers) =>
+					prevPlayers.map((p) =>
+						p.id === currentPlayer?.id
+							? { ...p, hasFoundAnswer: false }
+							: p
+					)
+				)
 			}
 		)
 
@@ -154,7 +165,9 @@ export function SocketProvider({ children }: SocketProviderProps) {
 			({ playerId, score }: { playerId: string; score: number }) => {
 				setPlayersList((prevPlayers) =>
 					prevPlayers.map((p) =>
-						p.id === playerId ? { ...p, score: score } : p
+						p.id === playerId
+							? { ...p, score: score, hasFoundAnswer: true }
+							: p
 					)
 				)
 			}
@@ -199,6 +212,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
 			socket.emit(SOCKET_EVENTS.START_GAME, roomId)
 		},
 		submitAnswer(answer: string) {
+			console.log("submit answer", answer)
 			socket.emit(SOCKET_EVENTS.SUBMIT_ANSWER, { roomId, answer })
 		},
 	}
@@ -210,6 +224,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
 		isGameStarted,
 		currentRound,
 		currentPlayer,
+		timeLimit,
 	}
 
 	return (
