@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useParams } from "react-router"
 import { Canvas } from "@react-three/fiber"
 import Experience from "@/components/3d/dot-earth/experience"
@@ -7,13 +7,21 @@ import { useSocket } from "@/contexts/socket-context"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { UsersIcon } from "lucide-react"
+import { useNavigate } from "react-router"
 
 export default function Lobby() {
+	const navigate = useNavigate()
 	const { roomId } = useSocket()
 	const { roomId: urlRoomId } = useParams<{ roomId: string }>()
-	const { joinRoom } = useSocket()
+	const { isGameStarted, joinRoom } = useSocket()
 	const [username, setUsername] = useState("")
 	const [error, setError] = useState("")
+
+	useEffect(() => {
+		if (isGameStarted) {
+			navigate(`/game/${roomId}`)
+		}
+	}, [isGameStarted, roomId])
 
 	const handleJoinRoom = () => {
 		// Validate username

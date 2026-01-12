@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router"
 import Home from "./routes/home/home"
 import Lobby from "./routes/lobby/lobby"
 import { SocketProvider } from "./contexts/socket-context"
+import Game from "./routes/game/game"
 
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
@@ -13,6 +14,7 @@ createRoot(document.getElementById("root")!).render(
 				<Routes>
 					<Route path="/" element={<Home />} />
 					<Route path="/lobby/:roomId" element={<Lobby />} />
+					<Route path="/game/:roomId" element={<Game />} />
 				</Routes>
 			</BrowserRouter>
 		</SocketProvider>

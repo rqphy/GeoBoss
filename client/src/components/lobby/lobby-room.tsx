@@ -65,7 +65,7 @@ export default function LobbyRoom() {
 					))}
 				</ul>
 			</Card>
-			<LobbyControls />
+			<LobbyControls  />
 		</section>
 	)
 }

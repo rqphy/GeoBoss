@@ -109,7 +109,6 @@ export function SocketProvider({ children }: SocketProviderProps) {
 				setRoomId(roomId)
 				setCurrentPlayer(player)
 				setPlayersList([player])
-				console.log("playersList", playersList)
 			}
 		)
 

@@ -4,11 +4,18 @@ import { useNavigate } from "react-router"
 
 export default function LobbyControls() {
 	const navigate = useNavigate()
-	const { roomId, leaveRoom, currentPlayer } = useSocket()
+	const { roomId, currentPlayer, playersList, startGame, leaveRoom } =
+		useSocket()
 
 	const handleLeaveRoom = () => {
 		leaveRoom(roomId)
 		navigate("/")
+	}
+
+	const handleStartGame = () => {
+		if (currentPlayer?.isAdmin && playersList.length >= 2) {
+			startGame()
+		}
 	}
 
 	return (
@@ -18,7 +25,9 @@ export default function LobbyControls() {
 			</Button>
 
 			{currentPlayer?.isAdmin && (
-				<Button variant="secondary">Commencer la partie</Button>
+				<Button variant="secondary" onClick={handleStartGame}>
+					Commencer la partie
+				</Button>
 			)}
 		</div>
 	)
