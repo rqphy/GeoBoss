@@ -10,7 +10,7 @@ interface PlayerCardProps {
 export default function PlayerCard({ player, isHost, isYou }: PlayerCardProps) {
 	return (
 		<div
-			className="rounded-md p-2 border border-secondary/20"
+			className="min-w-[140px] rounded-md p-2 border border-secondary/20"
 			style={{
 				backgroundColor: isYou ? `${player.color}40` : "transparent",
 			}}
