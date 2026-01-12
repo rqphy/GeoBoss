@@ -138,12 +138,9 @@ export function SocketProvider({ children }: SocketProviderProps) {
 				setCurrentRound(round)
 				setTimeLimit(timeLimit)
 				setPlayersList((prevPlayers) =>
-					prevPlayers.map((p) =>
-						p.id === currentPlayer?.id
-							? { ...p, hasFoundAnswer: false }
-							: p
-					)
+					prevPlayers.map((p) => ({ ...p, hasFoundAnswer: false }))
 				)
+				console.log("new round", country, round)
 			}
 		)
 
