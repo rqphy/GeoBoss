@@ -38,9 +38,13 @@ export class GameRoom {
 		return this.players.get(playerId)
 	}
 
+	getRoundWinner(scores: Player[]) {
+		return scores.sort((a, b) => b.score - a.score)[0]
+	}
+
 	updateAdmin(playerId: string) {
 		const player = this.getPlayer(playerId)
-		if(!player) return
+		if (!player) return
 		player.isAdmin = true
 	}
 
@@ -90,14 +94,14 @@ export class GameRoom {
 		if (isCorrect) {
 			const points = calculateScore(this.roundTimeSeconds)
 			player.score += points
-            this.io.to(this.id).emit(SOCKET_EVENTS.GOOD_ANSWER, {
-                playerId,
-                score: player.score,
-            })
+			this.io.to(this.id).emit(SOCKET_EVENTS.GOOD_ANSWER, {
+				playerId,
+				score: player.score,
+			})
 		} else {
-            this.io.to(this.id).emit(SOCKET_EVENTS.BAD_ANSWER, {
-                playerId,
-            })
+			this.io.to(this.id).emit(SOCKET_EVENTS.BAD_ANSWER, {
+				playerId,
+			})
 		}
 	}
 
