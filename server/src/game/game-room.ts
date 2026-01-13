@@ -8,6 +8,7 @@ import { removeAccents } from "../utils/index.js"
 export class GameRoom {
 	id: string
 	players: Map<string, Player>
+	fastestPlayer: Player | null = null
 	currentRound: number = 0
 	roundTimeSeconds: number = 20
 	maxRounds: number = 20
@@ -94,6 +95,10 @@ export class GameRoom {
 		if (isCorrect) {
 			const points = calculateScore(this.roundTimeSeconds)
 			player.score += points
+
+			if (!this.fastestPlayer) {
+				this.fastestPlayer = player
+			}
 			this.io.to(this.id).emit(SOCKET_EVENTS.GOOD_ANSWER, {
 				playerId,
 				score: player.score,
@@ -120,7 +125,10 @@ export class GameRoom {
 		this.io.to(this.id).emit(SOCKET_EVENTS.END_ROUND, {
 			correctAnswer: this.currentCountry,
 			scores,
+			winnerId: this.fastestPlayer?.id,
 		})
+
+		this.fastestPlayer = null
 
 		setTimeout(() => this.startNewRound(), 3000)
 	}
