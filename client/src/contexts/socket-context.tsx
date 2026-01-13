@@ -20,6 +20,9 @@ interface SocketStates {
 	currentRound: number
 	currentPlayer: Player | null
 	timeLimit: number
+	isRoundActive: boolean
+	correctAnswer: string | null
+	roundWinner: Player | null
 }
 
 interface SocketProviderProps {
@@ -35,6 +38,9 @@ interface SocketContextValue {
 	currentRound: number
 	currentPlayer: Player | null
 	timeLimit: number
+	isRoundActive: boolean
+	correctAnswer: string | null
+	roundWinner: Player | null
 
 	// Methods
 	createRoom: (playerName: string) => void
@@ -60,6 +66,9 @@ export function SocketProvider({ children }: SocketProviderProps) {
 	const [currentRound, setCurrentRound] = useState<number>(0)
 	const [currentPlayer, setCurrentPlayer] = useState<Player | null>(null)
 	const [timeLimit, setTimeLimit] = useState<number>(0)
+	const [isRoundActive, setIsRoundActive] = useState<boolean>(false)
+	const [correctAnswer, setCorrectAnswer] = useState<string | null>(null)
+	const [roundWinner, setRoundWinner] = useState<Player | null>(null)
 
 	useEffect(() => {
 		socket.on("connect", () => {
@@ -137,25 +146,47 @@ export function SocketProvider({ children }: SocketProviderProps) {
 			}) => {
 				setCurrentRound(round)
 				setTimeLimit(timeLimit)
-				setPlayersList((prevPlayers) =>
-					prevPlayers.map((p) => ({ ...p, hasFoundAnswer: false }))
-				)
+				setIsRoundActive(true)
+				setCorrectAnswer(null)
+				setRoundWinner(null)
+
 				console.log("new round", country, round)
 			}
 		)
 
-		// socket.on(
-		// 	SOCKET_EVENTS.END_ROUND,
-		// 	({
-		// 		correctAnswer,
-		// 		scores,
-		// 	}: {
-		// 		correctAnswer: string
-		// 		scores: { id: string; name: string; score: number }[]
-		// 	}) => {
-		// 		// TODO: update players list
-		// 	}
-		// )
+		socket.on(
+			SOCKET_EVENTS.END_ROUND,
+			({
+				correctAnswer,
+				scores,
+				winnerId,
+			}: {
+				correctAnswer: string
+				scores: { id: string; name: string; score: number }[]
+				winnerId: string
+			}) => {
+				setIsRoundActive(false)
+				setCorrectAnswer(correctAnswer)
+
+				setPlayersList((prevPlayers) => {
+					// Find and set the round winner
+					const winner = prevPlayers.find((p) => p.id === winnerId)
+					if (winner) {
+						setRoundWinner(winner)
+					}
+
+					return prevPlayers.map((p) => {
+						const score =
+							scores.find((s) => s.id === p.id)?.score ?? p.score
+						return {
+							...p,
+							score,
+							hasFoundAnswer: false,
+						}
+					})
+				})
+			}
+		)
 
 		socket.on(
 			SOCKET_EVENTS.GOOD_ANSWER,
@@ -222,6 +253,9 @@ export function SocketProvider({ children }: SocketProviderProps) {
 		currentRound,
 		currentPlayer,
 		timeLimit,
+		isRoundActive,
+		correctAnswer,
+		roundWinner,
 	}
 
 	return (
