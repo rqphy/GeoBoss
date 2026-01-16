@@ -4,9 +4,18 @@ import { Canvas } from "@react-three/fiber"
 import { OrbitControls } from "@react-three/drei"
 import Hud from "@/components/hud/hud"
 import { useSocket } from "@/contexts/socket-context"
+import { useNavigate } from "react-router"
+import { useEffect } from "react"
 
 export default function Lobby() {
-	const { currentRound } = useSocket()
+	const navigate = useNavigate()
+	const { currentRound, gameResults, roomId } = useSocket()
+
+	useEffect(() => {
+		if (gameResults) {
+			navigate(`/results/${roomId}`)
+		}
+	}, [gameResults])
 
 	if (!currentRound) {
 		return <div>Game not started</div>

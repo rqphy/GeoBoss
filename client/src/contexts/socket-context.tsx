@@ -23,6 +23,7 @@ interface SocketStates {
 	isRoundActive: boolean
 	correctAnswer: string | null
 	roundWinner: Player | null
+	gameResults: Player[] | null
 }
 
 interface SocketProviderProps {
@@ -41,6 +42,7 @@ interface SocketContextValue {
 	isRoundActive: boolean
 	correctAnswer: string | null
 	roundWinner: Player | null
+	gameResults: Player[] | null
 
 	// Methods
 	createRoom: (playerName: string) => void
@@ -69,6 +71,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
 	const [isRoundActive, setIsRoundActive] = useState<boolean>(false)
 	const [correctAnswer, setCorrectAnswer] = useState<string | null>(null)
 	const [roundWinner, setRoundWinner] = useState<Player | null>(null)
+	const [gameResults, setGameResults] = useState<Player[] | null>(null)
 
 	useEffect(() => {
 		socket.on("connect", () => {
@@ -129,8 +132,9 @@ export function SocketProvider({ children }: SocketProviderProps) {
 			setCurrentRound(1)
 		})
 
-		socket.on(SOCKET_EVENTS.END_GAME, () => {
+		socket.on(SOCKET_EVENTS.END_GAME, ({ scores }: { scores: Player[] }) => {
 			setIsGameStarted(false)
+			setGameResults(scores)
 		})
 
 		socket.on(
@@ -256,6 +260,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
 		isRoundActive,
 		correctAnswer,
 		roundWinner,
+		gameResults,
 	}
 
 	return (

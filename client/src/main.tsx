@@ -6,6 +6,7 @@ import Home from "./routes/home/home"
 import Lobby from "./routes/lobby/lobby"
 import { SocketProvider } from "./contexts/socket-context"
 import Game from "./routes/game/game"
+import Results from "./routes/results/results"
 
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
@@ -15,6 +16,7 @@ createRoot(document.getElementById("root")!).render(
 					<Route path="/" element={<Home />} />
 					<Route path="/lobby/:roomId" element={<Lobby />} />
 					<Route path="/game/:roomId" element={<Game />} />
+					<Route path="/results/:roomId" element={<Results />} />
 				</Routes>
 			</BrowserRouter>
 		</SocketProvider>
