@@ -34,7 +34,6 @@ import { useSocket } from "@/contexts/socket-context"
 export default function GlobeViewer() {
 	const [features, setFeatures] = useState<Feature[]>([])
 	const [loading, setLoading] = useState(true)
-	const [hoveredCountry, setHoveredCountry] = useState<string | null>(null)
 	const globeRef = useRef<THREE.Mesh>(null)
 	const { currentCountry } = useSocket()
 
@@ -53,30 +52,14 @@ export default function GlobeViewer() {
 			})
 	}, [])
 
-	const handleCountryClick = (name: string) => {
-		console.log("Clicked:", name)
-	}
-
-	const handlePointerEnter = (name: string) => {
-		setHoveredCountry(name)
-		document.body.style.cursor = "pointer"
-	}
-
-	const handlePointerLeave = () => {
-		setHoveredCountry(null)
-		document.body.style.cursor = "auto"
-	}
-
 	// Determine country color based on state
 	const getColor = (name: string) => {
-		if (hoveredCountry === name) return 0xffffff // White on hover
 		if (currentCountry === name) return 0xff6b35 // Orange for target country
 		return 0xf5ee9e // Default yellow
 	}
 
 	// Determine country offset based on state
 	const getOffset = (name: string) => {
-		if (hoveredCountry === name) return 0.12
 		if (currentCountry === name) return 0.11 // Slight pop for target
 		return 0.1
 	}
@@ -107,17 +90,16 @@ export default function GlobeViewer() {
 			{features.map((feature, index) => {
 				const name =
 					(feature.properties?.name as string) || `country-${index}`
+				const nameFr = (feature.properties?.name_fr as string) || name
+				// TODO: use iso code insteand of names
 
 				return (
 					<Country
 						key={name}
 						name={name}
 						polygons={feature.polygons}
-						color={getColor(name)}
-						offset={getOffset(name)}
-						onClick={handleCountryClick}
-						onPointerEnter={handlePointerEnter}
-						onPointerLeave={handlePointerLeave}
+						color={getColor(nameFr)}
+						offset={getOffset(nameFr)}
 					/>
 				)
 			})}

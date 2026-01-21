@@ -11,9 +11,6 @@ interface CountryProps {
 	polygons: Polygon[]
 	color?: THREE.Color | string | number
 	offset?: number
-	onClick?: (name: string) => void
-	onPointerEnter?: (name: string) => void
-	onPointerLeave?: (name: string) => void
 }
 
 export default function Country({
@@ -21,9 +18,6 @@ export default function Country({
 	polygons,
 	color = 0x44aa88,
 	offset = 0.1,
-	onClick,
-	onPointerEnter,
-	onPointerLeave,
 }: CountryProps) {
 	const mesh = useMemo(() => {
 		if (polygons.length === 0) return null
@@ -43,12 +37,7 @@ export default function Country({
 	if (!mesh) return null
 
 	return (
-		<primitive
-			object={mesh}
-			onClick={() => onClick?.(name)}
-			onPointerEnter={() => onPointerEnter?.(name)}
-			onPointerLeave={() => onPointerLeave?.(name)}
-		>
+		<primitive object={mesh}>
 			<meshStandardMaterial
 				color={color}
 				side={THREE.FrontSide}
