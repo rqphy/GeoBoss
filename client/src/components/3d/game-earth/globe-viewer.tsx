@@ -5,6 +5,7 @@ import CountryMarker from "./country-marker"
 import Atmosphere from "./atmosphere"
 import * as THREE from "three"
 import { useSocket } from "@/contexts/socket-context"
+import { TINY_COUNTRIES } from "@/constants/countries"
 import gsap from "gsap"
 
 export default function GlobeViewer() {
@@ -119,10 +120,12 @@ export default function GlobeViewer() {
 				})}
 			</group>
 
-			{/* Marker for current country - outside the rotating group */}
-			{currentCountryCode && showMarker && (
-				<CountryMarker color={0xff6b35} globeRadius={47} />
-			)}
+			{/* Marker for tiny countries - outside the rotating group */}
+			{currentCountryCode &&
+				showMarker &&
+				TINY_COUNTRIES.has(currentCountryCode) && (
+					<CountryMarker color={0xff6b35} globeRadius={47} />
+				)}
 		</>
 	)
 }
