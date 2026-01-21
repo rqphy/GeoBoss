@@ -24,6 +24,7 @@ interface SocketStates {
 	correctAnswer: string | null
 	roundWinner: Player | null
 	gameResults: Player[] | null
+	currentCountry: string | null
 }
 
 interface SocketProviderProps {
@@ -43,6 +44,7 @@ interface SocketContextValue {
 	correctAnswer: string | null
 	roundWinner: Player | null
 	gameResults: Player[] | null
+	currentCountry: string | null
 
 	// Methods
 	createRoom: (playerName: string) => void
@@ -72,6 +74,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
 	const [correctAnswer, setCorrectAnswer] = useState<string | null>(null)
 	const [roundWinner, setRoundWinner] = useState<Player | null>(null)
 	const [gameResults, setGameResults] = useState<Player[] | null>(null)
+	const [currentCountry, setCurrentCountry] = useState<string | null>(null)
 
 	useEffect(() => {
 		socket.on("connect", () => {
@@ -132,10 +135,13 @@ export function SocketProvider({ children }: SocketProviderProps) {
 			setCurrentRound(1)
 		})
 
-		socket.on(SOCKET_EVENTS.END_GAME, ({ scores }: { scores: Player[] }) => {
-			setIsGameStarted(false)
-			setGameResults(scores)
-		})
+		socket.on(
+			SOCKET_EVENTS.END_GAME,
+			({ scores }: { scores: Player[] }) => {
+				setIsGameStarted(false)
+				setGameResults(scores)
+			}
+		)
 
 		socket.on(
 			SOCKET_EVENTS.NEW_ROUND,
@@ -153,6 +159,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
 				setIsRoundActive(true)
 				setCorrectAnswer(null)
 				setRoundWinner(null)
+				setCurrentCountry(country)
 
 				console.log("new round", country, round)
 			}
@@ -261,6 +268,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
 		correctAnswer,
 		roundWinner,
 		gameResults,
+		currentCountry,
 	}
 
 	return (

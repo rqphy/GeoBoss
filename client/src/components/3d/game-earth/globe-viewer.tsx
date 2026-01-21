@@ -4,6 +4,7 @@ import Country from "./country"
 import Atmosphere from "./atmosphere"
 // import { useFrame } from "@react-three/fiber"
 import * as THREE from "three"
+import { useSocket } from "@/contexts/socket-context"
 
 // Color palette for countries
 // const COUNTRY_COLORS = [
@@ -35,6 +36,7 @@ export default function GlobeViewer() {
 	const [loading, setLoading] = useState(true)
 	const [hoveredCountry, setHoveredCountry] = useState<string | null>(null)
 	const globeRef = useRef<THREE.Mesh>(null)
+	const { currentCountry } = useSocket()
 
 	useEffect(() => {
 		const loader = new GeoJSONLoader()
@@ -65,6 +67,20 @@ export default function GlobeViewer() {
 		document.body.style.cursor = "auto"
 	}
 
+	// Determine country color based on state
+	const getColor = (name: string) => {
+		if (hoveredCountry === name) return 0xffffff // White on hover
+		if (currentCountry === name) return 0xff6b35 // Orange for target country
+		return 0xf5ee9e // Default yellow
+	}
+
+	// Determine country offset based on state
+	const getOffset = (name: string) => {
+		if (hoveredCountry === name) return 0.12
+		if (currentCountry === name) return 0.11 // Slight pop for target
+		return 0.1
+	}
+
 	if (loading) {
 		return (
 			<mesh>
@@ -91,16 +107,14 @@ export default function GlobeViewer() {
 			{features.map((feature, index) => {
 				const name =
 					(feature.properties?.name as string) || `country-${index}`
-				const isHovered = hoveredCountry === name
-				// const baseColor = getCountryColor(name)
 
 				return (
 					<Country
 						key={name}
 						name={name}
 						polygons={feature.polygons}
-						color={isHovered ? 0xffffff : 0xf5ee9e}
-						offset={isHovered ? 0.12 : 0.1}
+						color={getColor(name)}
+						offset={getOffset(name)}
 						onClick={handleCountryClick}
 						onPointerEnter={handlePointerEnter}
 						onPointerLeave={handlePointerLeave}

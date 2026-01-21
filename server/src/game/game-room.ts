@@ -10,8 +10,8 @@ export class GameRoom {
 	players: Map<string, Player>
 	fastestPlayer: Player | null = null
 	currentRound: number = 0
-	roundTimeSeconds: number = 5
-	maxRounds: number = 2
+	roundTimeSeconds: number = 10
+	maxRounds: number = 10
 	isGameStarted: boolean = false
 	currentCountry: string | null = null
 	roundTimer: NodeJS.Timeout | null = null
