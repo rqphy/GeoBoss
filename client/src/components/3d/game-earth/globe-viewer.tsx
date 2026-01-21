@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react"
 import { GeoJSONLoader, type Feature } from "three-geojson"
 import Country from "./country"
+import CountryMarker from "./country-marker"
 import Atmosphere from "./atmosphere"
 import * as THREE from "three"
 import { useSocket } from "@/contexts/socket-context"
@@ -9,6 +10,7 @@ import gsap from "gsap"
 export default function GlobeViewer() {
 	const [features, setFeatures] = useState<Feature[]>([])
 	const [loading, setLoading] = useState(true)
+	const [showMarker, setShowMarker] = useState(false)
 	const globeRef = useRef<THREE.Group>(null)
 	const { currentCountryCode } = useSocket()
 
@@ -29,6 +31,8 @@ export default function GlobeViewer() {
 
 	// Animate globe rotation when currentCountryCode changes
 	useEffect(() => {
+		setShowMarker(false) // Hide marker when animation starts
+
 		if (!currentCountryCode || !globeRef.current || features.length === 0)
 			return
 
@@ -55,6 +59,7 @@ export default function GlobeViewer() {
 			z: targetRotationY - Math.PI / 2,
 			duration: 1.5,
 			ease: "power2.inOut",
+			onComplete: () => setShowMarker(true),
 		})
 	}, [currentCountryCode, features])
 
@@ -80,34 +85,44 @@ export default function GlobeViewer() {
 	}
 
 	return (
-		<group
-			rotation={[-Math.PI / 2, 0, -Math.PI / 2]}
-			scale={[0.45, 0.45, 0.45]}
-			ref={globeRef}
-		>
-			<Atmosphere radius={105} color="#2a6f97" />
+		<>
+			<group
+				rotation={[-Math.PI / 2, 0, -Math.PI / 2]}
+				scale={[0.45, 0.45, 0.45]}
+				ref={globeRef}
+			>
+				<Atmosphere radius={105} color="#2a6f97" />
 
-			<mesh>
-				<sphereGeometry args={[100, 100, 50]} />
-				<meshStandardMaterial color={0x2a6f97} />
-			</mesh>
+				<mesh>
+					<sphereGeometry args={[100, 100, 50]} />
+					<meshStandardMaterial color={0x2a6f97} />
+				</mesh>
 
-			{/* Countries */}
-			{features.map((feature, index) => {
-				const name =
-					(feature.properties?.name as string) || `country-${index}`
-				const isoCode = feature.properties?.iso_a2 as string | undefined
+				{/* Countries */}
+				{features.map((feature, index) => {
+					const name =
+						(feature.properties?.name as string) ||
+						`country-${index}`
+					const isoCode = feature.properties?.iso_a2 as
+						| string
+						| undefined
 
-				return (
-					<Country
-						key={name}
-						name={name}
-						polygons={feature.polygons}
-						color={getColor(isoCode)}
-						offset={getOffset(isoCode)}
-					/>
-				)
-			})}
-		</group>
+					return (
+						<Country
+							key={name}
+							name={name}
+							polygons={feature.polygons}
+							color={getColor(isoCode)}
+							offset={getOffset(isoCode)}
+						/>
+					)
+				})}
+			</group>
+
+			{/* Marker for current country - outside the rotating group */}
+			{currentCountryCode && showMarker && (
+				<CountryMarker color={0xff6b35} globeRadius={47} />
+			)}
+		</>
 	)
 }
