@@ -2,39 +2,14 @@ import { useEffect, useState, useRef } from "react"
 import { GeoJSONLoader, type Feature } from "three-geojson"
 import Country from "./country"
 import Atmosphere from "./atmosphere"
-// import { useFrame } from "@react-three/fiber"
 import * as THREE from "three"
 import { useSocket } from "@/contexts/socket-context"
-
-// Color palette for countries
-// const COUNTRY_COLORS = [
-// 	0x4ecdc4, // Teal
-// 	0xff6b6b, // Coral
-// 	0x95e1d3, // Mint
-// 	0xf38181, // Salmon
-// 	0xfce38a, // Yellow
-// 	0xdff9fb, // Light blue
-// 	0xf9ca24, // Gold
-// 	0x6ab04c, // Green
-// 	0xbadc58, // Lime
-// 	0x22a6b3, // Cyan
-// 	0xbe2edd, // Purple
-// 	0xf0932b, // Orange
-// ]
-
-// Get a consistent color based on country name
-// function getCountryColor(name: string): number {
-// 	let hash = 0
-// 	for (let i = 0; i < name.length; i++) {
-// 		hash = name.charCodeAt(i) + ((hash << 5) - hash)
-// 	}
-// 	return COUNTRY_COLORS[Math.abs(hash) % COUNTRY_COLORS.length]
-// }
+import gsap from "gsap"
 
 export default function GlobeViewer() {
 	const [features, setFeatures] = useState<Feature[]>([])
 	const [loading, setLoading] = useState(true)
-	const globeRef = useRef<THREE.Mesh>(null)
+	const globeRef = useRef<THREE.Group>(null)
 	const { currentCountry } = useSocket()
 
 	useEffect(() => {
@@ -51,6 +26,37 @@ export default function GlobeViewer() {
 				setLoading(false)
 			})
 	}, [])
+
+	// Animate globe rotation when currentCountry changes
+	useEffect(() => {
+		if (!currentCountry || !globeRef.current || features.length === 0)
+			return
+
+		// Find the feature for the current country
+		const feature = features.find(
+			(f) => f.properties?.name_fr === currentCountry
+		)
+		if (!feature) return
+
+		// Get country centroid from GeoJSON properties
+		const lng = feature.properties?.label_x as number
+		const lat = feature.properties?.label_y as number
+		if (lng === undefined || lat === undefined) return
+
+		// Convert lat/lng to rotation angles
+		// The globe has base rotation of [-Math.PI / 2, 0, -Math.PI / 2]
+		// We need to rotate it so the country faces the camera
+		const targetRotationY = -THREE.MathUtils.degToRad(lng)
+		const targetRotationX = -Math.PI / 2 + THREE.MathUtils.degToRad(lat)
+
+		// Animate the globe rotation with GSAP
+		gsap.to(globeRef.current.rotation, {
+			x: targetRotationX,
+			z: targetRotationY - Math.PI / 2,
+			duration: 1.5,
+			ease: "power2.inOut",
+		})
+	}, [currentCountry, features])
 
 	// Determine country color based on state
 	const getColor = (name: string) => {
@@ -91,7 +97,7 @@ export default function GlobeViewer() {
 				const name =
 					(feature.properties?.name as string) || `country-${index}`
 				const nameFr = (feature.properties?.name_fr as string) || name
-				// TODO: use iso code insteand of names
+				// TODO: use iso code instead of names
 
 				return (
 					<Country
