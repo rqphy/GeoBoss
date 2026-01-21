@@ -1,6 +1,6 @@
 import { Server } from "socket.io"
 import { SOCKET_EVENTS } from "../socket/events.js"
-import { getRandomCountry } from "./countries.js"
+import { getRandomCountry, type Country } from "./countries.js"
 import { calculateScore } from "./game-logic.js"
 import type { Player, GameState } from "../types/index.js"
 import { removeAccents } from "../utils/index.js"
@@ -13,7 +13,7 @@ export class GameRoom {
 	roundTimeSeconds: number = 10
 	maxRounds: number = 10
 	isGameStarted: boolean = false
-	currentCountry: string | null = null
+	currentCountry: Country | null = null
 	roundTimer: NodeJS.Timeout | null = null
 	io: Server
 
@@ -75,7 +75,8 @@ export class GameRoom {
 		this.currentCountry = getRandomCountry()
 		this.io.to(this.id).emit(SOCKET_EVENTS.NEW_ROUND, {
 			round: this.currentRound,
-			country: this.currentCountry,
+			country: this.currentCountry.name,
+			countryCode: this.currentCountry.code,
 			timeLimit: this.roundTimeSeconds,
 		})
 
@@ -90,7 +91,7 @@ export class GameRoom {
 
 		const isCorrect =
 			removeAccents(answer.toLowerCase()) ===
-			removeAccents(this.currentCountry.toLowerCase())
+			removeAccents(this.currentCountry.name.toLowerCase())
 
 		if (isCorrect) {
 			const points = calculateScore(this.roundTimeSeconds)
@@ -123,7 +124,7 @@ export class GameRoom {
 		}))
 
 		this.io.to(this.id).emit(SOCKET_EVENTS.END_ROUND, {
-			correctAnswer: this.currentCountry,
+			correctAnswer: this.currentCountry?.name ?? "",
 			scores,
 			winnerId: this.fastestPlayer?.id,
 		})

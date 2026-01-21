@@ -24,7 +24,7 @@ interface SocketStates {
 	correctAnswer: string | null
 	roundWinner: Player | null
 	gameResults: Player[] | null
-	currentCountry: string | null
+	currentCountryCode: string | null
 }
 
 interface SocketProviderProps {
@@ -44,7 +44,7 @@ interface SocketContextValue {
 	correctAnswer: string | null
 	roundWinner: Player | null
 	gameResults: Player[] | null
-	currentCountry: string | null
+	currentCountryCode: string | null
 
 	// Methods
 	createRoom: (playerName: string) => void
@@ -74,7 +74,9 @@ export function SocketProvider({ children }: SocketProviderProps) {
 	const [correctAnswer, setCorrectAnswer] = useState<string | null>(null)
 	const [roundWinner, setRoundWinner] = useState<Player | null>(null)
 	const [gameResults, setGameResults] = useState<Player[] | null>(null)
-	const [currentCountry, setCurrentCountry] = useState<string | null>(null)
+	const [currentCountryCode, setCurrentCountryCode] = useState<string | null>(
+		null
+	)
 
 	useEffect(() => {
 		socket.on("connect", () => {
@@ -148,10 +150,12 @@ export function SocketProvider({ children }: SocketProviderProps) {
 			({
 				round,
 				country,
+				countryCode,
 				timeLimit,
 			}: {
 				round: number
 				country: string
+				countryCode: string
 				timeLimit: number
 			}) => {
 				setCurrentRound(round)
@@ -159,9 +163,9 @@ export function SocketProvider({ children }: SocketProviderProps) {
 				setIsRoundActive(true)
 				setCorrectAnswer(null)
 				setRoundWinner(null)
-				setCurrentCountry(country)
+				setCurrentCountryCode(countryCode)
 
-				console.log("new round", country, round)
+				console.log("new round", country, countryCode, round)
 			}
 		)
 
@@ -268,7 +272,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
 		correctAnswer,
 		roundWinner,
 		gameResults,
-		currentCountry,
+		currentCountryCode,
 	}
 
 	return (

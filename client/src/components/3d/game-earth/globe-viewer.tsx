@@ -10,7 +10,7 @@ export default function GlobeViewer() {
 	const [features, setFeatures] = useState<Feature[]>([])
 	const [loading, setLoading] = useState(true)
 	const globeRef = useRef<THREE.Group>(null)
-	const { currentCountry } = useSocket()
+	const { currentCountryCode } = useSocket()
 
 	useEffect(() => {
 		const loader = new GeoJSONLoader()
@@ -27,14 +27,14 @@ export default function GlobeViewer() {
 			})
 	}, [])
 
-	// Animate globe rotation when currentCountry changes
+	// Animate globe rotation when currentCountryCode changes
 	useEffect(() => {
-		if (!currentCountry || !globeRef.current || features.length === 0)
+		if (!currentCountryCode || !globeRef.current || features.length === 0)
 			return
 
-		// Find the feature for the current country
+		// Find the feature for the current country by ISO code
 		const feature = features.find(
-			(f) => f.properties?.name_fr === currentCountry
+			(f) => f.properties?.iso_a2 === currentCountryCode
 		)
 		if (!feature) return
 
@@ -56,17 +56,17 @@ export default function GlobeViewer() {
 			duration: 1.5,
 			ease: "power2.inOut",
 		})
-	}, [currentCountry, features])
+	}, [currentCountryCode, features])
 
-	// Determine country color based on state
-	const getColor = (name: string) => {
-		if (currentCountry === name) return 0xff6b35 // Orange for target country
+	// Determine country color based on ISO code
+	const getColor = (isoCode: string | undefined) => {
+		if (currentCountryCode === isoCode) return 0xff6b35 // Orange for target country
 		return 0xf5ee9e // Default yellow
 	}
 
-	// Determine country offset based on state
-	const getOffset = (name: string) => {
-		if (currentCountry === name) return 0.11 // Slight pop for target
+	// Determine country offset based on ISO code
+	const getOffset = (isoCode: string | undefined) => {
+		if (currentCountryCode === isoCode) return 0.11 // Slight pop for target
 		return 0.1
 	}
 
@@ -96,16 +96,15 @@ export default function GlobeViewer() {
 			{features.map((feature, index) => {
 				const name =
 					(feature.properties?.name as string) || `country-${index}`
-				const nameFr = (feature.properties?.name_fr as string) || name
-				// TODO: use iso code instead of names
+				const isoCode = feature.properties?.iso_a2 as string | undefined
 
 				return (
 					<Country
 						key={name}
 						name={name}
 						polygons={feature.polygons}
-						color={getColor(nameFr)}
-						offset={getOffset(nameFr)}
+						color={getColor(isoCode)}
+						offset={getOffset(isoCode)}
 					/>
 				)
 			})}
