@@ -29,21 +29,18 @@ export default function GlobeViewer() {
 				setLoading(false)
 			})
 	}, [])
-
-	// Animate globe rotation when currentCountryCode changes
+	
 	useEffect(() => {
-		setShowMarker(false) // Hide marker when animation starts
+		setShowMarker(false)
 
 		if (!currentCountryCode || !globeRef.current || features.length === 0)
 			return
 
-		// Find the feature for the current country by ISO code
 		const feature = features.find(
 			(f) => f.properties?.iso_a2 === currentCountryCode
 		)
 		if (!feature) return
 
-		// Get country centroid from GeoJSON properties
 		const lng = feature.properties?.label_x as number
 		const lat = feature.properties?.label_y as number
 		if (lng === undefined || lat === undefined) return
@@ -54,7 +51,6 @@ export default function GlobeViewer() {
 		const targetRotationY = -THREE.MathUtils.degToRad(lng)
 		const targetRotationX = -Math.PI / 2 + THREE.MathUtils.degToRad(lat)
 
-		// Animate the globe rotation with GSAP
 		gsap.to(globeRef.current.rotation, {
 			x: targetRotationX,
 			z: targetRotationY - Math.PI / 2,
@@ -64,13 +60,11 @@ export default function GlobeViewer() {
 		})
 	}, [currentCountryCode, features])
 
-	// Determine country color based on ISO code
 	const getColor = (isoCode: string | undefined) => {
 		if (currentCountryCode === isoCode) return 0xff6b35 // Orange for target country
 		return 0xf5ee9e // Default yellow
 	}
 
-	// Determine country offset based on ISO code
 	const getOffset = (isoCode: string | undefined) => {
 		if (currentCountryCode === isoCode) return 0.11 // Slight pop for target
 		return 0.1
@@ -99,7 +93,6 @@ export default function GlobeViewer() {
 					<meshStandardMaterial color={0x2a6f97} />
 				</mesh>
 
-				{/* Countries */}
 				{features.map((feature, index) => {
 					const name =
 						(feature.properties?.name as string) ||
@@ -111,7 +104,6 @@ export default function GlobeViewer() {
 					return (
 						<Country
 							key={name}
-							name={name}
 							polygons={feature.polygons}
 							color={getColor(isoCode)}
 							offset={getOffset(isoCode)}
@@ -120,7 +112,6 @@ export default function GlobeViewer() {
 				})}
 			</group>
 
-			{/* Marker for tiny countries - outside the rotating group */}
 			{currentCountryCode &&
 				showMarker &&
 				TINY_COUNTRIES.has(currentCountryCode) && (

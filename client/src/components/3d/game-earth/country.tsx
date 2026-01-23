@@ -1,4 +1,4 @@
-import { useMemo } from "react"
+import { useMemo, useEffect } from "react"
 import * as THREE from "three"
 import { GeoJSONLoader, type Polygon } from "three-geojson"
 import { Ellipsoid } from "3d-tiles-renderer"
@@ -7,14 +7,12 @@ import { Ellipsoid } from "3d-tiles-renderer"
 const GLOBE_ELLIPSOID = new Ellipsoid(100, 100, 100)
 
 interface CountryProps {
-	name: string
 	polygons: Polygon[]
 	color?: THREE.Color | string | number
 	offset?: number
 }
 
 export default function Country({
-	name,
 	polygons,
 	color = 0x44aa88,
 	offset = 0.1,
@@ -33,6 +31,25 @@ export default function Country({
 
 		return countryMesh
 	}, [polygons])
+
+	useEffect(() => {
+		return () => {
+			if (mesh) {
+				mesh.traverse((child) => {
+					if (child instanceof THREE.Mesh) {
+						child.geometry?.dispose()
+						if (child.material) {
+							if (Array.isArray(child.material)) {
+								child.material.forEach((mat) => mat.dispose())
+							} else {
+								child.material.dispose()
+							}
+						}
+					}
+				})
+			}
+		}
+	}, [mesh])
 
 	if (!mesh) return null
 

@@ -143,6 +143,20 @@ export function SocketProvider({ children }: SocketProviderProps) {
 		socket.on(SOCKET_EVENTS.GAME_STARTED, () => {
 			setIsGameStarted(true)
 			setCurrentRound(1)
+			setGameResults(null)
+			setCorrectAnswer(null)
+			setRoundWinner(null)
+			setCurrentCountryCode(null)
+			setAnswerFeedback(null)
+			setHasFoundAnswer(false)
+			setIsRoundActive(false)
+			setPlayersList((prevPlayers) =>
+				prevPlayers.map((p) => ({
+					...p,
+					score: 0,
+					hasFoundAnswer: false,
+				}))
+			)
 		})
 
 		socket.on(
