@@ -11,7 +11,7 @@ export class GameRoom {
 	fastestPlayer: Player | null = null
 	currentRound: number = 0
 	roundTimeSeconds: number = 10
-	maxRounds: number = 10
+	maxRounds: number = 20
 	isGameStarted: boolean = false
 	currentCountry: Country | null = null
 	roundTimer: NodeJS.Timeout | null = null

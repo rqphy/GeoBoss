@@ -11,6 +11,10 @@ export default function HudForm({
 
 	function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault()
+		if (!answer) return
+		if (answer.length < 3) return
+		if (answer.length > 50) return
+		if (!answer.match(/^[a-zA-Z ]+$/)) return
 		submitAnswer(answer)
 		setAnswer("")
 	}
