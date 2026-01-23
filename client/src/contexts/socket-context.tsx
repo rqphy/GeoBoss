@@ -25,6 +25,8 @@ interface SocketStates {
 	roundWinner: Player | null
 	gameResults: Player[] | null
 	currentCountryCode: string | null
+	answerFeedback: "correct" | "incorrect" | null
+	hasFoundAnswer: boolean
 }
 
 interface SocketProviderProps {
@@ -45,6 +47,8 @@ interface SocketContextValue {
 	roundWinner: Player | null
 	gameResults: Player[] | null
 	currentCountryCode: string | null
+	answerFeedback: "correct" | "incorrect" | null
+	hasFoundAnswer: boolean
 
 	// Methods
 	createRoom: (playerName: string) => void
@@ -77,6 +81,10 @@ export function SocketProvider({ children }: SocketProviderProps) {
 	const [currentCountryCode, setCurrentCountryCode] = useState<string | null>(
 		null
 	)
+	const [answerFeedback, setAnswerFeedback] = useState<
+		"correct" | "incorrect" | null
+	>(null)
+	const [hasFoundAnswer, setHasFoundAnswer] = useState<boolean>(false)
 
 	useEffect(() => {
 		socket.on("connect", () => {
@@ -164,6 +172,8 @@ export function SocketProvider({ children }: SocketProviderProps) {
 				setCorrectAnswer(null)
 				setRoundWinner(null)
 				setCurrentCountryCode(countryCode)
+				setAnswerFeedback(null)
+				setHasFoundAnswer(false)
 
 				console.log("new round", country, countryCode, round)
 			}
@@ -213,13 +223,29 @@ export function SocketProvider({ children }: SocketProviderProps) {
 							: p
 					)
 				)
+				// Show feedback for current player
+				setCurrentPlayer((prev) => {
+					if (prev?.id === playerId) {
+						setAnswerFeedback("correct")
+						setHasFoundAnswer(true)
+					}
+					return prev
+				})
 			}
 		)
 
 		socket.on(
 			SOCKET_EVENTS.BAD_ANSWER,
 			({ playerId }: { playerId: string }) => {
-				// TODO: if playerId correspond -> show it's a bad answer + bg
+				// Show feedback for current player
+				setCurrentPlayer((prev) => {
+					if (prev?.id === playerId) {
+						setAnswerFeedback("incorrect")
+						// Clear incorrect feedback after a short delay
+						setTimeout(() => setAnswerFeedback(null), 500)
+					}
+					return prev
+				})
 			}
 		)
 
@@ -273,6 +299,8 @@ export function SocketProvider({ children }: SocketProviderProps) {
 		roundWinner,
 		gameResults,
 		currentCountryCode,
+		answerFeedback,
+		hasFoundAnswer,
 	}
 
 	return (

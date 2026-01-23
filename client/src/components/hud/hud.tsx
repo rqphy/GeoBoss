@@ -13,6 +13,8 @@ export default function Hud() {
 		roundWinner,
 		isRoundActive,
 		submitAnswer,
+		answerFeedback,
+		hasFoundAnswer,
 	} = useSocket()
 	return (
 		<div className="fixed top-0 left-0 w-full h-full z-50">
@@ -25,7 +27,11 @@ export default function Hud() {
 			</div>
 
 			<div className="absolute bottom-10 left-1/2 -translate-x-1/2">
-				<HudForm submitAnswer={submitAnswer} />
+				<HudForm
+					submitAnswer={submitAnswer}
+					answerFeedback={answerFeedback}
+					disabled={hasFoundAnswer}
+				/>
 			</div>
 
 			{correctAnswer && !isRoundActive && (
