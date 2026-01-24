@@ -15,6 +15,7 @@ export class GameRoom {
 	isGameStarted: boolean = false
 	currentCountry: Country | null = null
 	roundTimer: NodeJS.Timeout | null = null
+	roundStartTime: number | null = null
 	io: Server
 
 	constructor(io: Server) {
@@ -82,6 +83,8 @@ export class GameRoom {
 			return
 		}
 
+		this.roundStartTime = Date.now()
+
 		this.currentCountry = getRandomCountry()
 		this.io.to(this.id).emit(SOCKET_EVENTS.NEW_ROUND, {
 			round: this.currentRound,
@@ -98,13 +101,17 @@ export class GameRoom {
 	submitAnswer(playerId: string, answer: string) {
 		const player = this.getPlayer(playerId)
 		if (!player || !this.currentCountry) return
+		if (!this.roundStartTime) return
 
 		const isCorrect =
 			removeAccents(answer.toLowerCase()) ===
 			removeAccents(this.currentCountry.name.toLowerCase())
 
 		if (isCorrect) {
-			const points = calculateScore(this.roundTimeSeconds)
+			const timeRemaining = this.roundTimeSeconds - (Date.now() - this.roundStartTime) / 1000
+
+			const points = calculateScore(timeRemaining)
+			console.log("points", points, timeRemaining)
 			player.score += points
 
 			if (!this.fastestPlayer) {
@@ -127,6 +134,8 @@ export class GameRoom {
 			clearTimeout(this.roundTimer)
 			this.roundTimer = null
 		}
+
+		this.roundStartTime = null
 
 		const scores = Array.from(this.players.values()).map((p) => ({
 			id: p.id,
