@@ -12,6 +12,11 @@ interface SocketProviderMethods {
 	submitAnswer: (answer: string) => void
 }
 
+export interface WrongAnswer {
+	playerId: string
+	answer: string
+}
+
 interface SocketStates {
 	isConnected: boolean
 	roomId: string
@@ -27,6 +32,7 @@ interface SocketStates {
 	currentCountryCode: string | null
 	answerFeedback: "correct" | "incorrect" | null
 	hasFoundAnswer: boolean
+	wrongAnswers: WrongAnswer[]
 }
 
 interface SocketProviderProps {
@@ -49,6 +55,7 @@ interface SocketContextValue {
 	currentCountryCode: string | null
 	answerFeedback: "correct" | "incorrect" | null
 	hasFoundAnswer: boolean
+	wrongAnswers: WrongAnswer[]
 
 	// Methods
 	createRoom: (playerName: string) => void
@@ -79,12 +86,13 @@ export function SocketProvider({ children }: SocketProviderProps) {
 	const [roundWinner, setRoundWinner] = useState<Player | null>(null)
 	const [gameResults, setGameResults] = useState<Player[] | null>(null)
 	const [currentCountryCode, setCurrentCountryCode] = useState<string | null>(
-		null
+		null,
 	)
 	const [answerFeedback, setAnswerFeedback] = useState<
 		"correct" | "incorrect" | null
 	>(null)
 	const [hasFoundAnswer, setHasFoundAnswer] = useState<boolean>(false)
+	const [wrongAnswers, setWrongAnswers] = useState<WrongAnswer[]>([])
 
 	useEffect(() => {
 		socket.on("connect", () => {
@@ -107,7 +115,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
 				} else {
 					setPlayersList((prevPlayers) => [...prevPlayers, player])
 				}
-			}
+			},
 		)
 
 		socket.on(
@@ -125,10 +133,10 @@ export function SocketProvider({ children }: SocketProviderProps) {
 
 				if (newAdminId && currentPlayer?.id === playerId) {
 					setCurrentPlayer((prev) =>
-						prev ? { ...prev, isAdmin: true } : null
+						prev ? { ...prev, isAdmin: true } : null,
 					)
 				}
-			}
+			},
 		)
 
 		socket.on(
@@ -137,7 +145,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
 				setRoomId(roomId)
 				setCurrentPlayer(player)
 				setPlayersList([player])
-			}
+			},
 		)
 
 		socket.on(SOCKET_EVENTS.GAME_STARTED, () => {
@@ -155,7 +163,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
 					...p,
 					score: 0,
 					hasFoundAnswer: false,
-				}))
+				})),
 			)
 		})
 
@@ -164,7 +172,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
 			({ scores }: { scores: Player[] }) => {
 				setIsGameStarted(false)
 				setGameResults(scores)
-			}
+			},
 		)
 
 		socket.on(
@@ -188,9 +196,10 @@ export function SocketProvider({ children }: SocketProviderProps) {
 				setCurrentCountryCode(countryCode)
 				setAnswerFeedback(null)
 				setHasFoundAnswer(false)
+				setWrongAnswers([])
 
 				console.log("new round", country, countryCode, round)
-			}
+			},
 		)
 
 		socket.on(
@@ -224,7 +233,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
 						}
 					})
 				})
-			}
+			},
 		)
 
 		socket.on(
@@ -234,8 +243,8 @@ export function SocketProvider({ children }: SocketProviderProps) {
 					prevPlayers.map((p) =>
 						p.id === playerId
 							? { ...p, score: score, hasFoundAnswer: true }
-							: p
-					)
+							: p,
+					),
 				)
 				// Show feedback for current player
 				setCurrentPlayer((prev) => {
@@ -245,12 +254,15 @@ export function SocketProvider({ children }: SocketProviderProps) {
 					}
 					return prev
 				})
-			}
+			},
 		)
 
 		socket.on(
 			SOCKET_EVENTS.BAD_ANSWER,
-			({ playerId }: { playerId: string }) => {
+			({ playerId, answer }: { playerId: string; answer: string }) => {
+				// Add wrong answer to the list
+				setWrongAnswers((prev) => [...prev, { playerId, answer }])
+
 				// Show feedback for current player
 				setCurrentPlayer((prev) => {
 					if (prev?.id === playerId) {
@@ -260,7 +272,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
 					}
 					return prev
 				})
-			}
+			},
 		)
 
 		return () => {
@@ -315,6 +327,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
 		currentCountryCode,
 		answerFeedback,
 		hasFoundAnswer,
+		wrongAnswers,
 	}
 
 	return (

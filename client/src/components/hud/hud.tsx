@@ -2,6 +2,7 @@ import HudForm from "./form"
 import Scoreboard from "./scoreboard"
 import Timer from "./timer"
 import Answer from "./answer"
+import WrongAnswerBackground from "./wrong-answer-background"
 import { useSocket } from "@/contexts/socket-context"
 
 export default function Hud() {
@@ -12,12 +13,18 @@ export default function Hud() {
 		correctAnswer,
 		roundWinner,
 		isRoundActive,
-		submitAnswer,
 		answerFeedback,
 		hasFoundAnswer,
+		wrongAnswers,
+		submitAnswer,
 	} = useSocket()
 	return (
 		<div className="fixed top-0 left-0 w-full h-full z-50">
+			<WrongAnswerBackground
+				wrongAnswers={wrongAnswers}
+				playersList={playersList}
+			/>
+
 			<div className="absolute top-1/2 -translate-y-1/2 right-4 pointer-events-auto">
 				<Scoreboard playersList={playersList} />
 			</div>

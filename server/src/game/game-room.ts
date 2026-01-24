@@ -10,8 +10,8 @@ export class GameRoom {
 	players: Map<string, Player>
 	fastestPlayer: Player | null = null
 	currentRound: number = 0
-	roundTimeSeconds: number = 10
-	maxRounds: number = 5
+	roundTimeSeconds: number = 20
+	maxRounds: number = 20
 	isGameStarted: boolean = false
 	currentCountry: Country | null = null
 	roundTimer: NodeJS.Timeout | null = null
@@ -117,6 +117,7 @@ export class GameRoom {
 		} else {
 			this.io.to(this.id).emit(SOCKET_EVENTS.BAD_ANSWER, {
 				playerId,
+				answer,
 			})
 		}
 	}
@@ -148,7 +149,7 @@ export class GameRoom {
 		this.isGameStarted = false
 
 		const finalScores = Array.from(this.players.values()).sort(
-			(a, b) => b.score - a.score
+			(a, b) => b.score - a.score,
 		)
 
 		this.io.to(this.id).emit(SOCKET_EVENTS.END_GAME, {
