@@ -102,10 +102,12 @@ export class GameRoom {
 		if (!player || !this.currentCountry) return
 		if (!this.roundStartTime) return
 
-		const isCorrect = isAnswerCorrect(answer, this.currentCountry.name)
+		const isCorrect = isAnswerCorrect(answer, this.currentCountry)
 
 		if (isCorrect) {
-			const timeRemaining = this.roundTimeSeconds - (Date.now() - this.roundStartTime) / 1000
+			const timeRemaining =
+				this.roundTimeSeconds -
+				(Date.now() - this.roundStartTime) / 1000
 
 			const points = calculateScore(timeRemaining)
 			console.log("points", points, timeRemaining)
