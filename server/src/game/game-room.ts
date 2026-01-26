@@ -8,6 +8,7 @@ export class GameRoom {
 	id: string
 	players: Map<string, Player>
 	fastestPlayer: Player | null = null
+	playersWhoFoundAnswer: Set<string> = new Set()
 	currentRound: number = 0
 	roundTimeSeconds: number = 20
 	maxRounds: number = 20
@@ -64,6 +65,7 @@ export class GameRoom {
 		}
 		this.currentRound = 0
 		this.fastestPlayer = null
+		this.playersWhoFoundAnswer.clear()
 		this.currentCountry = null
 		this.players.forEach((player) => {
 			player.score = 0
@@ -83,6 +85,7 @@ export class GameRoom {
 		}
 
 		this.roundStartTime = Date.now()
+		this.playersWhoFoundAnswer.clear()
 
 		this.currentCountry = getRandomCountry()
 		this.io.to(this.id).emit(SOCKET_EVENTS.NEW_ROUND, {
@@ -116,10 +119,19 @@ export class GameRoom {
 			if (!this.fastestPlayer) {
 				this.fastestPlayer = player
 			}
+
+			// Track player who found the answer
+			this.playersWhoFoundAnswer.add(playerId)
+
 			this.io.to(this.id).emit(SOCKET_EVENTS.GOOD_ANSWER, {
 				playerId,
 				score: player.score,
 			})
+
+			// If all players found the answer, end round early
+			if (this.playersWhoFoundAnswer.size === this.players.size) {
+				this.endRound()
+			}
 		} else {
 			this.io.to(this.id).emit(SOCKET_EVENTS.BAD_ANSWER, {
 				playerId,
