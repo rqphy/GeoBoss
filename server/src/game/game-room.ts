@@ -1,9 +1,8 @@
 import { Server } from "socket.io"
 import { SOCKET_EVENTS } from "../socket/events.js"
 import { getRandomCountry, type Country } from "./countries.js"
-import { calculateScore } from "./game-logic.js"
+import { calculateScore, isAnswerCorrect } from "./game-logic.js"
 import type { Player, GameState } from "../types/index.js"
-import { removeAccents } from "../utils/index.js"
 
 export class GameRoom {
 	id: string
@@ -103,9 +102,7 @@ export class GameRoom {
 		if (!player || !this.currentCountry) return
 		if (!this.roundStartTime) return
 
-		const isCorrect =
-			removeAccents(answer.toLowerCase()) ===
-			removeAccents(this.currentCountry.name.toLowerCase())
+		const isCorrect = isAnswerCorrect(answer, this.currentCountry.name)
 
 		if (isCorrect) {
 			const timeRemaining = this.roundTimeSeconds - (Date.now() - this.roundStartTime) / 1000

@@ -1,9 +1,6 @@
-// Country data with ISO codes and French names
-// ISO 3166-1 alpha-2 codes
-
 export interface Country {
-	code: string // ISO 3166-1 alpha-2
-	name: string // French name
+	code: string
+	name: string
 }
 
 export const countries: Country[] = [
@@ -204,17 +201,14 @@ export const countries: Country[] = [
 	{ code: "ZW", name: "Zimbabwe" },
 ]
 
-// Helper to get a random country
 export function getRandomCountry(): Country {
 	return countries[Math.floor(Math.random() * countries.length)]!
 }
 
-// Helper to get country by ISO code
 export function getCountryByCode(code: string): Country | undefined {
 	return countries.find((c) => c.code === code)
 }
 
-// Helper to get country by name (French)
 export function getCountryByName(name: string): Country | undefined {
 	return countries.find((c) => c.name.toLowerCase() === name.toLowerCase())
 }

@@ -13,7 +13,6 @@ export function initializeSocketHandlers(io: Server) {
 	io.on(SOCKET_EVENTS.CONNECTION, (socket: Socket) => {
 		console.log("Client connected:", socket.id)
 
-		// Create room
 		socket.on(SOCKET_EVENTS.CREATE_ROOM, (playerName: string) => {
 			const room = new GameRoom(io)
 			rooms.set(room.id, room)
@@ -37,7 +36,6 @@ export function initializeSocketHandlers(io: Server) {
 			})
 		})
 
-		// Join room
 		socket.on(
 			SOCKET_EVENTS.JOIN_ROOM,
 			({
@@ -81,7 +79,6 @@ export function initializeSocketHandlers(io: Server) {
 			}
 		)
 
-		// TODO: leave room handler
 		socket.on(SOCKET_EVENTS.LEAVE_ROOM, (roomId: string) => {
 			const room = rooms.get(roomId)
 			if (!room) return
@@ -90,7 +87,6 @@ export function initializeSocketHandlers(io: Server) {
 			handlePlayerRemoval(io, socket.id, roomId, room)
 		})
 
-		// Start game
 		socket.on(SOCKET_EVENTS.START_GAME, (roomId: string) => {
 			const room = rooms.get(roomId)
 			if (!room) return
@@ -104,7 +100,6 @@ export function initializeSocketHandlers(io: Server) {
 			room.startGame()
 		})
 
-		// Submit answer
 		socket.on(
 			SOCKET_EVENTS.SUBMIT_ANSWER,
 			({ roomId, answer }: { roomId: string; answer: string }) => {
@@ -116,7 +111,6 @@ export function initializeSocketHandlers(io: Server) {
 			}
 		)
 
-		// Disconnect handler
 		socket.on(SOCKET_EVENTS.DISCONNECTION, () => {
 			const playerRoom = findPlayerRoom(socket.id)
 			if (!playerRoom) return
