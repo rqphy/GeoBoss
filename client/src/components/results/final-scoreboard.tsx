@@ -4,7 +4,7 @@ export default function FinalScoreboard({ players }: { players: Player[] }) {
 	if (players.length === 0) return null
 
 	return (
-		<div className="w-full max-w-md bg-secondary/80 rounded-xl p-4">
+		<div className="w-full max-w-md bg-foreground/80 rounded-xl p-4">
 			<h3 className="text-lg font-bold mb-3">Classement</h3>
 			<div className="flex flex-col gap-2">
 				{players.map((player, index) => (

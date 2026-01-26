@@ -1,6 +1,6 @@
 import { Server } from "socket.io"
 import { SOCKET_EVENTS } from "../socket/events.js"
-import { getRandomCountry,getRandomCountryByRound, type Country } from "./countries.js"
+import { getRandomCountryByRound, type Country } from "./countries.js"
 import { calculateScore, isAnswerCorrect } from "./game-logic.js"
 import type { Player, GameState } from "../types/index.js"
 
@@ -10,8 +10,8 @@ export class GameRoom {
 	fastestPlayer: Player | null = null
 	playersWhoFoundAnswer: Set<string> = new Set()
 	currentRound: number = 0
-	roundTimeSeconds: number = 20
-	maxRounds: number = 20
+	roundTimeSeconds: number = 5
+	maxRounds: number = 2
 	isGameStarted: boolean = false
 	currentCountry: Country | null = null
 	roundTimer: NodeJS.Timeout | null = null
@@ -87,7 +87,10 @@ export class GameRoom {
 		this.roundStartTime = Date.now()
 		this.playersWhoFoundAnswer.clear()
 
-		this.currentCountry = getRandomCountryByRound(this.currentRound, this.maxRounds)
+		this.currentCountry = getRandomCountryByRound(
+			this.currentRound,
+			this.maxRounds,
+		)
 		this.io.to(this.id).emit(SOCKET_EVENTS.NEW_ROUND, {
 			round: this.currentRound,
 			country: this.currentCountry.name,

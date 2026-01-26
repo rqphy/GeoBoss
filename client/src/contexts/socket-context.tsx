@@ -217,7 +217,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
 				setCorrectAnswer(correctAnswer)
 
 				setPlayersList((prevPlayers) => {
-					// Find and set the round winner
+
 					const winner = prevPlayers.find((p) => p.id === winnerId)
 					if (winner) {
 						setRoundWinner(winner)
@@ -246,7 +246,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
 							: p,
 					),
 				)
-				// Show feedback for current player
+
 				setCurrentPlayer((prev) => {
 					if (prev?.id === playerId) {
 						setAnswerFeedback("correct")
