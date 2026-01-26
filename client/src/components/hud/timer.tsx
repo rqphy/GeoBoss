@@ -3,9 +3,11 @@ import { useEffect, useState } from "react"
 export default function Timer({
 	totalTime,
 	roundNumber,
+	isRoundActive,
 }: {
 	totalTime: number
 	roundNumber: number
+	isRoundActive: boolean
 }) {
 	const [timeLeft, setTimeLeft] = useState(totalTime)
 
@@ -14,14 +16,14 @@ export default function Timer({
 	}, [totalTime, roundNumber])
 
 	useEffect(() => {
-		if (timeLeft <= 0) return
+		if (timeLeft <= 0 || !isRoundActive) return
 
 		const interval = setInterval(() => {
 			setTimeLeft((prev) => prev - 1)
 		}, 1000)
 
 		return () => clearInterval(interval)
-	}, [timeLeft])
+	}, [timeLeft, isRoundActive])
 
 	const progress = Math.max(0, ((timeLeft - 1) / (totalTime - 1)) * 100)
 	const radius = 34

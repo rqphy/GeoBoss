@@ -30,7 +30,11 @@ export default function Hud() {
 			</div>
 
 			<div className="absolute top-10 left-1/2 -translate-x-1/2">
-				<Timer totalTime={timeLimit} roundNumber={currentRound} />
+				<Timer
+					totalTime={timeLimit}
+					roundNumber={currentRound}
+					isRoundActive={isRoundActive}
+				/>
 			</div>
 
 			<div className="absolute bottom-10 left-1/2 -translate-x-1/2">
