@@ -1,6 +1,6 @@
 import { Server } from "socket.io"
 import { SOCKET_EVENTS } from "../socket/events.js"
-import { getRandomCountry, type Country } from "./countries.js"
+import { getRandomCountry,getRandomCountryByRound, type Country } from "./countries.js"
 import { calculateScore, isAnswerCorrect } from "./game-logic.js"
 import type { Player, GameState } from "../types/index.js"
 
@@ -87,7 +87,7 @@ export class GameRoom {
 		this.roundStartTime = Date.now()
 		this.playersWhoFoundAnswer.clear()
 
-		this.currentCountry = getRandomCountry()
+		this.currentCountry = getRandomCountryByRound(this.currentRound, this.maxRounds)
 		this.io.to(this.id).emit(SOCKET_EVENTS.NEW_ROUND, {
 			round: this.currentRound,
 			country: this.currentCountry.name,
