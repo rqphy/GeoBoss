@@ -3,48 +3,13 @@ import { Button } from "@/components/ui/button"
 import { Canvas } from "@react-three/fiber"
 import Experience from "@/components/3d/dot-earth/experience"
 import PodiumBar from "@/components/results/podium-bar"
-import FinalScoreboard from "@/components/results/final-scoreboard"
 import { useSocket } from "@/contexts/socket-context"
-import type { Player } from "@/types/game"
 import {
 	Card,
 	CardHeader,
 	CardTitle,
 	CardDescription,
 } from "@/components/ui/card"
-
-// const fakeGameResults = [
-// 	{
-// 		id: "1",
-// 		name: "Raphael",
-// 		score: 1859,
-// 		color: "#FF5733",
-// 	},
-// 	{
-// 		id: "2",
-// 		name: "John",
-// 		score: 1234,
-// 		color: "#33FF57",
-// 	},
-// 	{
-// 		id: "3",
-// 		name: "Jane",
-// 		score: 934,
-// 		color: "#3357FF",
-// 	},
-// 	{
-// 		id: "4",
-// 		name: "Bob",
-// 		score: 423,
-// 		color: "#FFD700",
-// 	},
-// 	{
-// 		id: "5",
-// 		name: "Alice",
-// 		score: 123,
-// 		color: "#FF8C00",
-// 	},
-// ] as Player[]
 
 export default function Results() {
 	const navigate = useNavigate()
