@@ -31,7 +31,7 @@ export const countries: Country[] = [
 	{ code: "BJ", name: "Bénin", difficulty: "hard" },
 	{ code: "BT", name: "Bhoutan", difficulty: "hard" },
 	{ code: "BY", name: "Biélorussie", difficulty: "medium" },
-	{ code: "MM", name: "Birmanie", difficulty: "medium" },
+	{ code: "MM", name: "Birmanie", difficulty: "medium", aliases: ["Myanmar"] },
 	{ code: "BO", name: "Bolivie", difficulty: "medium" },
 	{ code: "BA", name: "Bosnie-Herzégovine", aliases: ["Bosnie"], difficulty: "medium" },
 	{ code: "BW", name: "Botswana", difficulty: "hard" },
