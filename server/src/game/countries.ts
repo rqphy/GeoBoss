@@ -250,6 +250,11 @@ export const countries: Country[] = [
 	{ code: "ZW", name: "Zimbabwe", difficulty: "medium" },
 ]
 
+/**
+ * Gets a random country based on the difficulty
+ * @param difficulty - The difficulty of the country
+ * @returns A random country
+ */
 export function getRandomCountry(difficulty?: Difficulty): Country {
 	const filteredCountries = difficulty
 		? countries.filter((c) => c.difficulty === difficulty)
@@ -267,7 +272,9 @@ export function getRandomCountry(difficulty?: Difficulty): Country {
 
 /**
  * Gets a random country based on the current round number.
- * Progressive difficulty: easy (rounds 1-7), medium (rounds 8-14), hard (rounds 15-20)
+ * @param round - The current round number
+ * @param maxRounds - The maximum number of rounds
+ * @returns A random country
  */
 export function getRandomCountryByRound(round: number, maxRounds: number = 20): Country {
 	const progress = round / maxRounds
@@ -322,10 +329,20 @@ export function generateCountryPool(count: number, progressive: boolean = true):
 	return [...easyCountries, ...mediumCountries, ...hardCountries]
 }
 
+/**
+ * 
+ * @param code - The ISO 3166-1 alpha-2 code of the country
+ * @returns 
+ */
 export function getCountryByCode(code: string): Country | undefined {
 	return countries.find((c) => c.code === code)
 }
 
+/**
+ * Gets a country by its name
+ * @param name - The name of the country
+ * @returns The country
+ */
 export function getCountryByName(name: string): Country | undefined {
 	return countries.find((c) => c.name.toLowerCase() === name.toLowerCase())
 }
