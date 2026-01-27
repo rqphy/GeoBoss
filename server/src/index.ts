@@ -3,19 +3,25 @@ import express from "express"
 import { createServer } from "http"
 import { Server } from "socket.io"
 import { initializeSocketHandlers } from "./socket/handlers.js"
+import apiRoutes from "./routes/api.js"
+import cors from "cors"
 
 const app = express()
 const httpServer = createServer(app)
 const io = new Server(httpServer, {
 	cors: {
-		origin: config.clientUrl,
+		origin: config.clientUrl || "http://localhost:5173",
 	},
 })
 
+app.use(cors())
 app.use(express.json())
+
+app.use("/api", apiRoutes)
 
 initializeSocketHandlers(io)
 
-httpServer.listen(config.port, () => {
-	console.log("Server running on port 3000")
+const PORT = config.port || 3000
+httpServer.listen(PORT, () => {
+	console.log(`Server running on port ${PORT}`)
 })

@@ -3,6 +3,7 @@ import { SOCKET_EVENTS } from "../socket/events.js"
 import { generateCountryPool, type Country } from "./countries.js"
 import { calculateScore, isAnswerCorrect } from "./game-logic.js"
 import type { Player, GameState } from "../types/index.js"
+import { saveWinner } from "../services/game-service.js"
 
 export class GameRoom {
 	id: string
@@ -94,7 +95,10 @@ export class GameRoom {
 		// Get the next country from the pre-generated pool
 		this.currentCountry = this.countryPool[this.currentRound - 1] || null
 		if (!this.currentCountry) {
-			console.error("No country available in pool for round", this.currentRound)
+			console.error(
+				"No country available in pool for round",
+				this.currentRound,
+			)
 			this.endGame()
 			return
 		}
@@ -176,16 +180,35 @@ export class GameRoom {
 		setTimeout(() => this.startNewRound(), 3000)
 	}
 
-	endGame() {
+	async endGame() {
 		this.isGameStarted = false
 
 		const finalScores = Array.from(this.players.values()).sort(
 			(a, b) => b.score - a.score,
 		)
 
+		const winner = finalScores[0]
+
 		this.io.to(this.id).emit(SOCKET_EVENTS.END_GAME, {
 			scores: finalScores,
 		})
+
+		if (!winner) return
+
+		try {
+			await saveWinner({
+				roomCode: this.id,
+				playerCount: this.players.size,
+				winner: {
+					name: winner.name,
+					color: winner.color,
+					score: winner.score,
+				},
+			})
+			console.log("Winner saved successfully", winner?.name)
+		} catch (error) {
+			console.error("Error saving winner:", error)
+		}
 	}
 
 	getState(): GameState {
