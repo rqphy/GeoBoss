@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Experience from "@/components/3d/dot-earth/experience"
 import { Canvas } from "@react-three/fiber"
 import { Button } from "@/components/ui/button"
@@ -24,12 +24,31 @@ import {
 } from "lucide-react"
 import CreateRoomModal from "@/components/create-room-modal"
 import { TUTORIAL_CARDS, FAQ_ITEMS, REVIEWS } from "@/constants/homepage"
+import { getTotalGamesCount } from "@/services/api"
 
 export default function Home() {
 	// TODO: Get connection state from socket
 	const isConnected = true
 	const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
-	const [isJoinModalOpen, setIsJoinModalOpen] = useState(false)
+	const [questionsAnswered, setQuestionsAnswered] = useState<number | null>(
+		null,
+	)
+
+	useEffect(() => {
+		const fetchStats = async () => {
+			try {
+				const data = await getTotalGamesCount()
+				// Each game has 20 questions
+				const totalQuestions = (data.total || 0) * 20
+				setQuestionsAnswered(totalQuestions + 1200)
+			} catch (error) {
+				console.error("Failed to fetch statistics:", error)
+				setQuestionsAnswered(0)
+			}
+		}
+
+		fetchStats()
+	}, [])
 
 	return (
 		<>
@@ -113,7 +132,11 @@ export default function Home() {
 				<div className="max-w-3xl mx-auto text-center">
 					<div className="bg-secondary/5 border border-secondary/20 backdrop-blur-sm rounded-2xl p-10">
 						<p className="text-6xl md:text-7xl font-bold text-secondary mb-4">
-							1200+
+							{questionsAnswered === null ? (
+								<Loader2 className="w-16 h-16 animate-spin mx-auto" />
+							) : (
+								questionsAnswered.toLocaleString()
+							)}
 						</p>
 						<p className="text-xl text-secondary/70 uppercase tracking-widest">
 							Questions répondues

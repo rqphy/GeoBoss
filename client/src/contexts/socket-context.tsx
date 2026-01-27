@@ -67,7 +67,7 @@ interface SocketContextValue {
 }
 
 const socketContext = createContext<SocketContextValue | null>(null)
-const serverAddress = "http://localhost:3000"
+const serverAddress = import.meta.env.VITE_SERVER_URL || "http://localhost:3000"
 const socket: Socket = io(serverAddress, {
 	withCredentials: true,
 	transports: ["websocket"],
