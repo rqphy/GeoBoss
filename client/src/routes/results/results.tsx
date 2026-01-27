@@ -13,54 +13,44 @@ import {
 	CardDescription,
 } from "@/components/ui/card"
 
-// colors
-// "#FF5733", // Red-Orange
-// "#33FF57", // Green
-// "#3357FF", // Blue
-// "#F333FF", // Magenta
-// "#FFD700", // Gold
-// "#FF1493", // Deep Pink
-// "#00CED1", // Dark Turquoise
-// "#FF8C00", // Dark Orange
-
-const fakeGameResults = [
-	{
-		id: "1",
-		name: "Raphael",
-		score: 1859,
-		color: "#FF5733",
-	},
-	{
-		id: "2",
-		name: "John",
-		score: 1234,
-		color: "#33FF57",
-	},
-	{
-		id: "3",
-		name: "Jane",
-		score: 934,
-		color: "#3357FF",
-	},
-	{
-		id: "4",
-		name: "Bob",
-		score: 423,
-		color: "#FFD700",
-	},
-	{
-		id: "5",
-		name: "Alice",
-		score: 123,
-		color: "#FF8C00",
-	},
-] as Player[]
+// const fakeGameResults = [
+// 	{
+// 		id: "1",
+// 		name: "Raphael",
+// 		score: 1859,
+// 		color: "#FF5733",
+// 	},
+// 	{
+// 		id: "2",
+// 		name: "John",
+// 		score: 1234,
+// 		color: "#33FF57",
+// 	},
+// 	{
+// 		id: "3",
+// 		name: "Jane",
+// 		score: 934,
+// 		color: "#3357FF",
+// 	},
+// 	{
+// 		id: "4",
+// 		name: "Bob",
+// 		score: 423,
+// 		color: "#FFD700",
+// 	},
+// 	{
+// 		id: "5",
+// 		name: "Alice",
+// 		score: 123,
+// 		color: "#FF8C00",
+// 	},
+// ] as Player[]
 
 export default function Results() {
 	const navigate = useNavigate()
 	const { gameResults, roomId } = useSocket()
 
-	const [first, second, third, ...rest] = fakeGameResults || []
+	const [first, second, third, ...rest] = gameResults || []
 
 	function restartGame() {
 		navigate(`/lobby/${roomId}`)
@@ -76,17 +66,23 @@ export default function Results() {
 
 			<section className="h-screen flex items-center justify-center bg-black">
 				<div className="min-h-screen flex flex-col items-center justify-center relative z-20">
-					<Card className="bg-secondary/5 border-secondary/20 backdrop-blur-sm">
+					<Card className="bg-secondary/5 border-secondary/20 backdrop-blur-sm min-w-[350px]">
 						<CardHeader className="text-center">
 							<CardTitle className="text-2xl text-secondary">
 								🏆 Résultats
 							</CardTitle>
 						</CardHeader>
 						<CardDescription className="px-4">
-							<div className="flex items-end gap-4 mb-4">
-								<PodiumBar player={second} position={2} />
-								<PodiumBar player={first} position={1} />
-								<PodiumBar player={third} position={3} />
+							<div className="grid grid-cols-3 justify-center items-end gap-4 mb-4">
+								<div className="col-span-1">
+									<PodiumBar player={second} position={2} />
+								</div>
+								<div className="col-span-1">
+									<PodiumBar player={first} position={1} />
+								</div>
+								<div className="col-span-1">
+									<PodiumBar player={third} position={3} />
+								</div>
 							</div>
 							<div className="">
 								{rest.map((player, index) => (

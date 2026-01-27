@@ -10,8 +10,8 @@ export class GameRoom {
 	fastestPlayer: Player | null = null
 	playersWhoFoundAnswer: Set<string> = new Set()
 	currentRound: number = 0
-	roundTimeSeconds: number = 5
-	maxRounds: number = 2
+	roundTimeSeconds: number = 15
+	maxRounds: number = 20
 	isGameStarted: boolean = false
 	currentCountry: Country | null = null
 	roundTimer: NodeJS.Timeout | null = null
