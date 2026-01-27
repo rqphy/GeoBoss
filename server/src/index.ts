@@ -1,3 +1,4 @@
+import { config } from "./config/env.js"
 import express from "express"
 import { createServer } from "http"
 import { Server } from "socket.io"
@@ -7,7 +8,7 @@ const app = express()
 const httpServer = createServer(app)
 const io = new Server(httpServer, {
 	cors: {
-		origin: "*",
+		origin: config.clientUrl,
 	},
 })
 
@@ -15,6 +16,6 @@ app.use(express.json())
 
 initializeSocketHandlers(io)
 
-httpServer.listen(3000, () => {
+httpServer.listen(config.port, () => {
 	console.log("Server running on port 3000")
 })
