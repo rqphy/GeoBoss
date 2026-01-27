@@ -1,70 +1,64 @@
 import { Globe, Zap, Trophy } from "lucide-react"
 import type { TutorialCard, FAQItem, Review } from "@/types/content"
 
-// Tutorial Cards for "How to Play" section
 export const TUTORIAL_CARDS: TutorialCard[] = [
 	{
 		icon: Globe,
-		title: "Devinez les capitales",
+		title: "Trouvez le pays",
 		description:
-			"Trouvez la capitale d'un pays donné ou identifiez le pays d'une capitale. Testez vos connaissances géographiques !",
+			"Un pays s'affiche sur le globe 3D. Tapez son nom le plus vite possible !",
 	},
 	{
 		icon: Zap,
-		title: "Soyez rapide",
+		title: "La vitesse compte",
 		description:
-			"20 secondes pour répondre ! Plus vous répondez vite, plus vous marquez de points.",
+			"15 secondes par round, 20 rounds au total. Plus vous êtes rapide, plus vous gagnez de points.",
 	},
 	{
 		icon: Trophy,
-		title: "Affrontez vos amis",
+		title: "Devenez une légende",
 		description:
-			"Jouez en multijoueur et grimpez dans le classement en battant vos adversaires !",
+			"Jouez solo ou avec vos amis. Les meilleurs scores sont immortalisés dans le classement mondial !",
 	},
 ]
 
-// FAQ Items
 export const FAQ_ITEMS: FAQItem[] = [
 	{
-		question: "Comment sont calculés les points ?",
-		answer: "Plus vous répondez rapidement, plus vous gagnez de points ! Une réponse instantanée rapporte le maximum de points, tandis qu'une réponse juste avant la fin du chrono rapporte moins. Une mauvaise réponse ne fait pas perdre de points.",
+		question: "Comment fonctionne le jeu ?",
+		answer: "Chaque partie dure 20 rounds de 15 secondes. Un pays s'affiche sur le globe 3D et vous devez taper son nom le plus rapidement possible. Plus vous êtes rapide, plus vous gagnez de points !",
 	},
 	{
-		question: "Combien de joueurs peuvent jouer ensemble ?",
-		answer: "GeoQuiz supporte de 2 à 8 joueurs par partie. Plus on est de fous, plus on rit !",
+		question: "Puis-je jouer seul ou avec des amis ?",
+		answer: "Les deux ! Jouez en solo pour vous entraîner, ou créez une partie multijoueur et invitez vos amis en leur envoyant le lien depuis le lobby. Jusqu'à 8 joueurs peuvent s'affronter !",
 	},
 	{
-		question: "Les questions sont-elles aléatoires ?",
-		answer: "Oui ! Chaque partie propose un mélange aléatoire de questions sur les capitales et les pays du monde entier. Vous ne tomberez jamais deux fois sur la même série de questions.",
+		question: "Comment inviter mes amis ?",
+		answer: "Créez une partie, puis dans le lobby, copiez le code de la room ou partagez le lien directement. Vos amis pourront rejoindre en quelques clics !",
 	},
 	{
-		question: "Puis-je jouer sur mobile ?",
-		answer: "Absolument ! GeoQuiz est entièrement responsive et fonctionne parfaitement sur smartphone, tablette et ordinateur.",
+		question: "Comment apparaître dans le classement mondial ?",
+		answer: "À la fin d'une partie, le gagnant est automatiquement ajouté au classement si son score est assez bon. Entraînez-vous et devenez une légende !",
+	},
+	{
+		question: "Les pays sont-ils toujours les mêmes ?",
+		answer: "Non ! Chaque partie génère une sélection unique de 20 pays. De plus, la difficulté augmente progressivement : pays faciles en début de partie, pays plus difficiles vers la fin.",
 	},
 ]
 
-// User Reviews
 export const REVIEWS: Review[] = [
 	{
-		name: "Marie L.",
+		name: "Marie",
 		text: "Super jeu pour réviser sa géographie en s'amusant ! J'ai enfin retenu toutes les capitales d'Afrique.",
 		rating: 5,
 	},
 	{
-		name: "Thomas D.",
+		name: "totoga",
 		text: "On joue avec mes collègues pendant la pause déj. L'ambiance est au top !",
 		rating: 5,
 	},
 	{
-		name: "Sophie M.",
+		name: "pablo45",
 		text: "Parfait pour les soirées entre amis. Simple, rapide et addictif !",
 		rating: 4,
 	},
 ]
-
-// App Statistics (can be updated dynamically later)
-export const APP_STATS = {
-	questionsAnswered: "1200+",
-	activePlayers: "500+",
-	gamesPlayed: "300+",
-}
