@@ -1,6 +1,6 @@
 import { Server } from "socket.io"
 import { SOCKET_EVENTS } from "../socket/events.js"
-import { getRandomCountryByRound, type Country } from "./countries.js"
+import { generateCountryPool, type Country } from "./countries.js"
 import { calculateScore, isAnswerCorrect } from "./game-logic.js"
 import type { Player, GameState } from "../types/index.js"
 
@@ -14,6 +14,7 @@ export class GameRoom {
 	maxRounds: number = 20
 	isGameStarted: boolean = false
 	currentCountry: Country | null = null
+	countryPool: Country[] = []
 	roundTimer: NodeJS.Timeout | null = null
 	roundStartTime: number | null = null
 	io: Server
@@ -71,6 +72,9 @@ export class GameRoom {
 			player.score = 0
 		})
 
+		// Generate unique country pool for the game
+		this.countryPool = generateCountryPool(this.maxRounds, true)
+
 		this.isGameStarted = true
 		this.io.to(this.id).emit(SOCKET_EVENTS.GAME_STARTED)
 		this.startNewRound()
@@ -87,10 +91,14 @@ export class GameRoom {
 		this.roundStartTime = Date.now()
 		this.playersWhoFoundAnswer.clear()
 
-		this.currentCountry = getRandomCountryByRound(
-			this.currentRound,
-			this.maxRounds,
-		)
+		// Get the next country from the pre-generated pool
+		this.currentCountry = this.countryPool[this.currentRound - 1] || null
+		if (!this.currentCountry) {
+			console.error("No country available in pool for round", this.currentRound)
+			this.endGame()
+			return
+		}
+
 		this.io.to(this.id).emit(SOCKET_EVENTS.NEW_ROUND, {
 			round: this.currentRound,
 			country: this.currentCountry.name,

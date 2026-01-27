@@ -284,6 +284,44 @@ export function getRandomCountryByRound(round: number, maxRounds: number = 20): 
 	}
 }
 
+/**
+ * Generates a pool of unique countries for a game.
+ * @param count - Number of countries needed
+ * @param progressive - If true, uses progressive difficulty (easy -> medium -> hard)
+ * @returns Array of unique countries
+ */
+export function generateCountryPool(count: number, progressive: boolean = true): Country[] {
+	if (!progressive) {
+		// Simple random shuffle and take first N
+		const shuffled = [...countries].sort(() => Math.random() - 0.5)
+		return shuffled.slice(0, count)
+	}
+
+	// Progressive difficulty distribution
+	const easyCount = Math.ceil(count * 0.35) // First 35%
+	const mediumCount = Math.ceil(count * 0.35) // Next 35%
+	const hardCount = count - easyCount - mediumCount // Remaining 30%
+
+	// Get countries by difficulty and shuffle each group
+	const easyCountries = countries
+		.filter((c) => c.difficulty === "easy")
+		.sort(() => Math.random() - 0.5)
+		.slice(0, easyCount)
+
+	const mediumCountries = countries
+		.filter((c) => c.difficulty === "medium")
+		.sort(() => Math.random() - 0.5)
+		.slice(0, mediumCount)
+
+	const hardCountries = countries
+		.filter((c) => c.difficulty === "hard")
+		.sort(() => Math.random() - 0.5)
+		.slice(0, hardCount)
+
+	// Combine in order: easy first, then medium, then hard
+	return [...easyCountries, ...mediumCountries, ...hardCountries]
+}
+
 export function getCountryByCode(code: string): Country | undefined {
 	return countries.find((c) => c.code === code)
 }
