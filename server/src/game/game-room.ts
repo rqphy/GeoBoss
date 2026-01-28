@@ -127,8 +127,7 @@ export class GameRoom {
 				this.roundTimeSeconds -
 				(Date.now() - this.roundStartTime) / 1000
 
-			const points = calculateScore(timeRemaining)
-			console.log("points", points, timeRemaining)
+			const points = calculateScore(timeRemaining, this.roundTimeSeconds)
 			player.score += points
 
 			if (!this.fastestPlayer) {
