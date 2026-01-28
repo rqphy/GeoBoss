@@ -48,7 +48,7 @@ export const FAQ_ITEMS: FAQItem[] = [
 export const REVIEWS: Review[] = [
 	{
 		name: "Marie",
-		text: "Super jeu pour réviser sa géographie en s'amusant ! J'ai enfin retenu toutes les capitales d'Afrique.",
+		text: "Super jeu pour réviser sa géographie en s'amusant !",
 		rating: 5,
 	},
 	{

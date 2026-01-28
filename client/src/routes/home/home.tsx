@@ -28,6 +28,7 @@ import {
 import CreateRoomModal from "@/components/create-room-modal"
 import { TUTORIAL_CARDS, FAQ_ITEMS, REVIEWS } from "@/constants/homepage"
 import { getTotalGamesCount, getWinnerLeaderboard } from "@/services/api"
+import { useSocket } from "@/contexts/socket-context"
 
 interface LeaderboardEntry {
 	id: string
@@ -39,8 +40,7 @@ interface LeaderboardEntry {
 }
 
 export default function Home() {
-	// TODO: Get connection state from socket
-	const isConnected = true
+	const { isConnected } = useSocket()
 	const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
 	const [questionsAnswered, setQuestionsAnswered] = useState<number | null>(
 		null,
@@ -52,7 +52,6 @@ export default function Home() {
 		const fetchStats = async () => {
 			try {
 				const data = await getTotalGamesCount()
-				// Each game has 20 questions
 				const totalQuestions = (data.total || 0) * 20
 				setQuestionsAnswered(totalQuestions + 1200)
 			} catch (error) {
@@ -77,26 +76,25 @@ export default function Home() {
 	}, [])
 
 	return (
-		<>
+		<div className="relative bg-black">
 			<div className="fixed bottom-0 left-0 w-full h-full">
 				<Canvas camera={{ fov: 30, position: [6, 0, 0] }}>
 					<Experience />
 				</Canvas>
 			</div>
+
 			{!isConnected && (
 				<div className="fixed top-0 left-0 right-0 z-50 bg-amber-500/90 text-black py-2 px-4 flex items-center justify-center gap-2 text-sm font-medium animate-in slide-in-from-top duration-300">
 					<AlertTriangle className="w-4 h-4" />
-					<span>
-						Connexion au serveur en cours... Veuillez patienter.
-					</span>
+					<span>Le serveur se réveille… merci de patienter.</span>
 					<Loader2 className="w-4 h-4 animate-spin" />
 				</div>
 			)}
 
-			<section className="flex flex-col items-center justify-center h-screen bg-black">
-				<div className="text-center z-10">
+			<section className="relative flex flex-col items-center justify-center h-screen">
+				<div className="text-center">
 					<h1 className="text-8xl md:text-8xl uppercase font-family font-light text-secondary">
-						GEOQUIZ
+						Geoboss
 					</h1>
 					<Button
 						variant="secondary"
@@ -126,8 +124,7 @@ export default function Home() {
 				</div>
 			</section>
 
-			{/* Tutorial Cards */}
-			<section className="bg-black py-16 px-6">
+			<section className="relative py-16 px-6">
 				<div className="max-w-5xl mx-auto">
 					<h2 className="text-3xl md:text-4xl font-light font-family text-secondary text-center mb-12 uppercase tracking-wide">
 						Comment jouer ?
@@ -150,11 +147,30 @@ export default function Home() {
 							</Card>
 						))}
 					</div>
+					<div className="flex justify-center">
+						<Button
+							variant="secondary"
+							className="hover:cursor-pointer mt-9"
+							disabled={!isConnected}
+							onClick={() => setIsCreateModalOpen(true)}
+						>
+							{isConnected ? (
+								<>
+									Créer une partie
+									<Gamepad2Icon />
+								</>
+							) : (
+								<>
+									Connexion au serveur...
+									<Loader2 className="animate-spin" />
+								</>
+							)}
+						</Button>
+					</div>
 				</div>
 			</section>
 
-			{/* Statistics Counter */}
-			<section className="bg-black py-16 px-6">
+			<section className="relative py-16 px-6">
 				<div className="max-w-3xl mx-auto text-center">
 					<div className="bg-secondary/5 border border-secondary/20 backdrop-blur-sm rounded-2xl p-10">
 						<p className="text-6xl md:text-7xl font-bold text-secondary mb-4">
@@ -171,8 +187,7 @@ export default function Home() {
 				</div>
 			</section>
 
-			{/* Leaderboard Section */}
-			<section className="bg-black py-16 px-6">
+			<section className="relative py-16 px-6">
 				<div className="max-w-3xl mx-auto">
 					<div className="flex items-center justify-center gap-3 mb-12">
 						<Trophy className="w-8 h-8 text-secondary" />
@@ -279,10 +294,29 @@ export default function Home() {
 						</div>
 					)}
 				</div>
+				<div className="flex justify-center">
+					<Button
+						variant="secondary"
+						className="hover:cursor-pointer mt-9"
+						disabled={!isConnected}
+						onClick={() => setIsCreateModalOpen(true)}
+					>
+						{isConnected ? (
+							<>
+								Créer une partie
+								<Gamepad2Icon />
+							</>
+						) : (
+							<>
+								Connexion au serveur...
+								<Loader2 className="animate-spin" />
+							</>
+						)}
+					</Button>
+				</div>
 			</section>
 
-			{/* FAQ Section */}
-			<section className="bg-black py-16 px-6">
+			<section className="relative py-16 px-6">
 				<div className="max-w-3xl mx-auto">
 					<div className="flex items-center justify-center gap-3 mb-12">
 						<HelpCircle className="w-8 h-8 text-secondary" />
@@ -309,13 +343,12 @@ export default function Home() {
 				</div>
 			</section>
 
-			{/* Reviews Section */}
-			<section className="bg-black py-16 px-6 pb-32">
+			<section className="relative py-16 px-6 pb-32">
 				<div className="max-w-5xl mx-auto">
 					<div className="flex items-center justify-center gap-3 mb-12">
 						<Quote className="w-8 h-8 text-secondary" />
 						<h2 className="text-3xl md:text-4xl font-light font-family text-secondary text-center uppercase tracking-wide">
-							Ils adorent GeoQuiz
+							Ils adorent GeoBoss
 						</h2>
 					</div>
 					<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -349,13 +382,32 @@ export default function Home() {
 							</Card>
 						))}
 					</div>
+					<div className="flex justify-center">
+						<Button
+							variant="secondary"
+							className="hover:cursor-pointer mt-9"
+							disabled={!isConnected}
+							onClick={() => setIsCreateModalOpen(true)}
+						>
+							{isConnected ? (
+								<>
+									Créer une partie
+									<Gamepad2Icon />
+								</>
+							) : (
+								<>
+									Connexion au serveur...
+									<Loader2 className="animate-spin" />
+								</>
+							)}
+						</Button>
+					</div>
 				</div>
 			</section>
-
 			<CreateRoomModal
 				open={isCreateModalOpen}
 				onOpenChange={setIsCreateModalOpen}
 			/>
-		</>
+		</div>
 	)
 }
