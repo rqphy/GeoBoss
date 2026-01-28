@@ -343,7 +343,7 @@ export default function Home() {
 				</div>
 			</section>
 
-			<section className="relative py-16 px-6 pb-32">
+			<section className="relative py-16 px-6">
 				<div className="max-w-5xl mx-auto">
 					<div className="flex items-center justify-center gap-3 mb-12">
 						<Quote className="w-8 h-8 text-secondary" />
@@ -405,8 +405,8 @@ export default function Home() {
 				</div>
 			</section>
 
-			<footer className="relative py-8 px-6 border-t border-secondary/10">
-				<div className="max-w-5xl mx-auto">
+			<footer className="relative px-6 py-4 pb-16">
+				<div className="py-4 max-w-5xl mx-auto border-t bg-secondary/5 border border-secondary/20 backdrop-blur-sm rounded-lg px-6">
 					<div className="flex flex-col md:flex-row items-center justify-between gap-4 text-secondary text-sm">
 						<div className="flex items-center gap-2">
 							<span>© {new Date().getFullYear()} GeoBoss</span>
