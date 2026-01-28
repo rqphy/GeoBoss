@@ -73,7 +73,7 @@ export default function Home() {
 
 		fetchStats()
 		fetchLeaderboard()
-	}, [])
+	}, [isConnected])
 
 	return (
 		<div className="relative bg-black">
