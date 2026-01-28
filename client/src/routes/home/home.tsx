@@ -21,10 +21,22 @@ import {
 	AlertTriangle,
 	HelpCircle,
 	Quote,
+	Trophy,
+	Medal,
+	Crown,
 } from "lucide-react"
 import CreateRoomModal from "@/components/create-room-modal"
 import { TUTORIAL_CARDS, FAQ_ITEMS, REVIEWS } from "@/constants/homepage"
-import { getTotalGamesCount } from "@/services/api"
+import { getTotalGamesCount, getWinnerLeaderboard } from "@/services/api"
+
+interface LeaderboardEntry {
+	id: string
+	player_name: string
+	player_color: string
+	winning_score: number
+	players_beaten: number
+	created_at: string
+}
 
 export default function Home() {
 	// TODO: Get connection state from socket
@@ -33,6 +45,8 @@ export default function Home() {
 	const [questionsAnswered, setQuestionsAnswered] = useState<number | null>(
 		null,
 	)
+	const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([])
+	const [isLoadingLeaderboard, setIsLoadingLeaderboard] = useState(true)
 
 	useEffect(() => {
 		const fetchStats = async () => {
@@ -47,7 +61,19 @@ export default function Home() {
 			}
 		}
 
+		const fetchLeaderboard = async () => {
+			try {
+				const data = await getWinnerLeaderboard(10)
+				setLeaderboard(data)
+			} catch (error) {
+				console.error("Failed to fetch leaderboard:", error)
+			} finally {
+				setIsLoadingLeaderboard(false)
+			}
+		}
+
 		fetchStats()
+		fetchLeaderboard()
 	}, [])
 
 	return (
@@ -142,6 +168,116 @@ export default function Home() {
 							Questions répondues
 						</p>
 					</div>
+				</div>
+			</section>
+
+			{/* Leaderboard Section */}
+			<section className="bg-black py-16 px-6">
+				<div className="max-w-3xl mx-auto">
+					<div className="flex items-center justify-center gap-3 mb-12">
+						<Trophy className="w-8 h-8 text-secondary" />
+						<h2 className="text-3xl md:text-4xl font-light font-family text-secondary text-center uppercase tracking-wide">
+							Classement Mondial
+						</h2>
+					</div>
+
+					{isLoadingLeaderboard ? (
+						<div className="flex justify-center items-center py-12">
+							<Loader2 className="w-12 h-12 animate-spin text-secondary" />
+						</div>
+					) : leaderboard.length === 0 ? (
+						<div className="text-center py-12">
+							<p className="text-secondary/70 text-lg">
+								Aucune partie terminée pour le moment.
+							</p>
+							<p className="text-secondary/50 text-sm mt-2">
+								Soyez le premier à marquer l'histoire !
+							</p>
+						</div>
+					) : (
+						<div className="bg-secondary/5 border border-secondary/20 backdrop-blur-sm rounded-2xl overflow-hidden">
+							<div className="overflow-x-auto">
+								<table className="w-full">
+									<thead className="bg-secondary/10 border-b border-secondary/20">
+										<tr>
+											<th className="px-6 py-4 text-left text-sm font-semibold text-secondary uppercase tracking-wider">
+												Rang
+											</th>
+											<th className="px-6 py-4 text-left text-sm font-semibold text-secondary uppercase tracking-wider">
+												Joueur
+											</th>
+											<th className="px-6 py-4 text-center text-sm font-semibold text-secondary uppercase tracking-wider">
+												Score
+											</th>
+											<th className="px-6 py-4 text-center text-sm font-semibold text-secondary uppercase tracking-wider hidden md:table-cell">
+												Adversaires battus
+											</th>
+										</tr>
+									</thead>
+									<tbody className="divide-y divide-secondary/10">
+										{leaderboard.map((entry, index) => {
+											const rank = index + 1
+											const rankIcon =
+												rank === 1 ? (
+													<Crown className="w-5 h-5 text-yellow-400" />
+												) : rank === 2 ? (
+													<Medal className="w-5 h-5 text-gray-300" />
+												) : rank === 3 ? (
+													<Medal className="w-5 h-5 text-amber-600" />
+												) : null
+
+											return (
+												<tr
+													key={entry.id}
+													className="hover:bg-secondary/5 transition-colors"
+												>
+													<td className="px-6 py-4">
+														<div className="flex items-center gap-2">
+															{rankIcon || (
+																<span className="text-secondary/70 font-medium w-5 text-center">
+																	{rank}
+																</span>
+															)}
+														</div>
+													</td>
+													<td className="px-6 py-4">
+														<div className="flex items-center gap-3">
+															<div
+																className="w-4 h-4 rounded-full border-2 border-secondary/30"
+																style={{
+																	backgroundColor:
+																		entry.player_color,
+																}}
+															/>
+															<span className="text-secondary font-medium">
+																{
+																	entry.player_name
+																}
+															</span>
+														</div>
+													</td>
+													<td className="px-6 py-4 text-center">
+														<span className="text-secondary font-bold text-lg">
+															{
+																entry.winning_score
+															}
+														</span>
+													</td>
+													<td className="px-6 py-4 text-center hidden md:table-cell">
+														<span className="text-secondary/70">
+															{
+																entry.players_beaten
+															}
+														</span>
+													</td>
+												</tr>
+											)
+										})}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					)}
 				</div>
 			</section>
 
