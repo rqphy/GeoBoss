@@ -404,6 +404,34 @@ export default function Home() {
 					</div>
 				</div>
 			</section>
+
+			<footer className="relative py-8 px-6 border-t border-secondary/10">
+				<div className="max-w-5xl mx-auto">
+					<div className="flex flex-col md:flex-row items-center justify-between gap-4 text-secondary text-sm">
+						<div className="flex items-center gap-2">
+							<span>© {new Date().getFullYear()} GeoBoss</span>
+							<span className="hidden md:inline">•</span>
+							<span className="text-secondary">v2.0.0</span>
+						</div>
+						<div className="flex items-center gap-2">
+							<span>Made with</span>
+							<span className="text-red-500 animate-pulse">
+								❤️
+							</span>
+							<span>by</span>
+							<a
+								href="https://github.com/rqphy"
+								target="_blank"
+								rel="noopener noreferrer"
+								className="text-secondary hover:text-secondary/80 transition-colors underline underline-offset-4"
+							>
+								Raphaël
+							</a>
+						</div>
+					</div>
+				</div>
+			</footer>
+
 			<CreateRoomModal
 				open={isCreateModalOpen}
 				onOpenChange={setIsCreateModalOpen}
