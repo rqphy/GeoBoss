@@ -16,7 +16,7 @@ export const PLAYER_COLORS = [
 ]
 
 export function findPlayerRoom(
-	playerId: string
+	playerId: string,
 ): { room: GameRoom; roomId: string } | null {
 	for (const [roomId, room] of rooms.entries()) {
 		if (room.hasPlayer(playerId)) {
@@ -30,23 +30,27 @@ export function getAvailableColor(room: GameRoom): string {
 	const players = room.getState().players
 	const usedColors = new Set(players.map((p) => p.color))
 
-	const availableColor = PLAYER_COLORS.find((color) => !usedColors.has(color))
+	// Filter to get all unused colors
+	const availableColors = PLAYER_COLORS.filter(
+		(color) => !usedColors.has(color),
+	)
 
-	if (!availableColor) {
+	// If all colors are taken, generate a random color
+	if (availableColors.length === 0) {
 		return `#${Math.floor(Math.random() * 16777215)
 			.toString(16)
 			.padStart(6, "0")}`
 	}
 
-	return availableColor
+	// Randomly select from available colors
+	return availableColors[Math.floor(Math.random() * availableColors.length)]!
 }
-
 
 export function handlePlayerRemoval(
 	io: Server,
 	playerId: string,
 	roomId: string,
-	room: GameRoom
+	room: GameRoom,
 ): void {
 	const player = room.getPlayer(playerId)
 	const wasAdmin = player?.isAdmin || false
