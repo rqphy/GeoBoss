@@ -4,7 +4,10 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 import type { Player } from "@/types/game"
 
 export default function Scoreboard({ playersList }: { playersList: Player[] }) {
-	const [isExpanded, setIsExpanded] = useState(true)
+	const [isExpanded, setIsExpanded] = useState(() => {
+		if (typeof window === "undefined") return false
+		return window.innerWidth >= 768
+	})
 
 	return (
 		<div

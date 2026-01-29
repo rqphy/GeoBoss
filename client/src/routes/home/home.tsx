@@ -93,7 +93,7 @@ export default function Home() {
 
 			<section className="relative flex flex-col items-center justify-center h-screen">
 				<div className="text-center">
-					<h1 className="text-8xl md:text-8xl uppercase font-family font-light text-secondary">
+					<h1 className="text-6xl md:text-8xl uppercase font-family font-light text-secondary">
 						Geoboss
 					</h1>
 					<Button

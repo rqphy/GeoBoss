@@ -23,7 +23,7 @@ export default function LobbyRoom() {
 
 	return (
 		<section className="relative">
-			<Card className="absolute top-0 left-0 translate-x-[calc(-100%-1rem)] w-[220px] bg-background/5 border-secondary/20 backdrop-blur-sm text-center px-2 py-4">
+			<Card className="md:absolute top-0 left-0 md:translate-x-[calc(-100%-1rem)] w-full md:w-[220px] bg-background/5 border-secondary/20 backdrop-blur-sm text-center px-2 py-4 mb-4 md:mb-0">
 				<CardHeader>
 					<h2 className="text-2xl text-secondary font-bold">
 						{roomId}
@@ -65,7 +65,7 @@ export default function LobbyRoom() {
 					))}
 				</ul>
 			</Card>
-			<LobbyControls  />
+			<LobbyControls />
 		</section>
 	)
 }

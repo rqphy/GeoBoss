@@ -40,13 +40,13 @@ export default function HudForm({
 	}
 
 	return (
-		<form onSubmit={handleSubmit} className="flex gap-2">
+		<form onSubmit={handleSubmit} className="w-full md:flex gap-2">
 			<Input
 				ref={inputRef}
 				placeholder={
 					disabled ? "Bonne réponse !" : "Entrez le nom du pays"
 				}
-				className={`bg-background transition-all duration-200 ${
+				className={`w-full mb-2 md:mb-0 md:w-auto h-12 md:h-9 bg-background transition-all duration-200 ${
 					answerFeedback ? feedbackStyles[answerFeedback] : ""
 				} `}
 				value={answer}
@@ -54,7 +54,12 @@ export default function HudForm({
 				disabled={disabled}
 				onChange={(e) => setAnswer(e.target.value)}
 			/>
-			<Button variant="secondary" type="submit" disabled={disabled}>
+			<Button
+				variant="secondary"
+				type="submit"
+				disabled={disabled}
+				className="w-full md:w-auto h-12 md:h-9"
+			>
 				Submit
 			</Button>
 		</form>

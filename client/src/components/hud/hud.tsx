@@ -37,7 +37,7 @@ export default function Hud() {
 				/>
 			</div>
 
-			<div className="absolute bottom-10 left-1/2 -translate-x-1/2">
+			<div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-full md:w-auto px-4 md:px-0">
 				<HudForm
 					submitAnswer={submitAnswer}
 					answerFeedback={answerFeedback}
@@ -46,7 +46,7 @@ export default function Hud() {
 			</div>
 
 			{correctAnswer && !isRoundActive && (
-				<div className="absolute top-1/3 left-1/2 -translate-x-1/2">
+				<div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-full md:w-auto px-4 md:px-0">
 					<Answer
 						correctAnswer={correctAnswer}
 						roundWinner={roundWinner}
