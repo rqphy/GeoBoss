@@ -73,12 +73,14 @@ export class GameRoom {
 			player.score = 0
 		})
 
-		// Generate unique country pool for the game
 		this.countryPool = generateCountryPool(this.maxRounds, true)
 
 		this.isGameStarted = true
 		this.io.to(this.id).emit(SOCKET_EVENTS.GAME_STARTED)
-		this.startNewRound()
+
+		setTimeout(() => {
+			this.startNewRound()
+		}, 2000)
 	}
 
 	startNewRound() {
@@ -92,7 +94,6 @@ export class GameRoom {
 		this.roundStartTime = Date.now()
 		this.playersWhoFoundAnswer.clear()
 
-		// Get the next country from the pre-generated pool
 		this.currentCountry = this.countryPool[this.currentRound - 1] || null
 		if (!this.currentCountry) {
 			console.error(
@@ -134,7 +135,6 @@ export class GameRoom {
 				this.fastestPlayer = player
 			}
 
-			// Track player who found the answer
 			this.playersWhoFoundAnswer.add(playerId)
 
 			this.io.to(this.id).emit(SOCKET_EVENTS.GOOD_ANSWER, {
@@ -142,7 +142,6 @@ export class GameRoom {
 				score: player.score,
 			})
 
-			// If all players found the answer, end round early
 			if (this.playersWhoFoundAnswer.size === this.players.size) {
 				this.endRound()
 			}

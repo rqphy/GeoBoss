@@ -30,19 +30,16 @@ export function getAvailableColor(room: GameRoom): string {
 	const players = room.getState().players
 	const usedColors = new Set(players.map((p) => p.color))
 
-	// Filter to get all unused colors
 	const availableColors = PLAYER_COLORS.filter(
 		(color) => !usedColors.has(color),
 	)
 
-	// If all colors are taken, generate a random color
 	if (availableColors.length === 0) {
 		return `#${Math.floor(Math.random() * 16777215)
 			.toString(16)
 			.padStart(6, "0")}`
 	}
 
-	// Randomly select from available colors
 	return availableColors[Math.floor(Math.random() * availableColors.length)]!
 }
 
