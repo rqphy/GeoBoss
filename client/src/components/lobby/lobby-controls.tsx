@@ -4,8 +4,7 @@ import { useNavigate } from "react-router"
 
 export default function LobbyControls() {
 	const navigate = useNavigate()
-	const { roomId, currentPlayer, playersList, startGame, leaveRoom } =
-		useSocket()
+	const { roomId, currentPlayer, startGame, leaveRoom } = useSocket()
 
 	const handleLeaveRoom = () => {
 		leaveRoom(roomId)
