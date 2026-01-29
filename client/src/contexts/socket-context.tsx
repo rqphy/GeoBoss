@@ -178,7 +178,6 @@ export function SocketProvider({ children }: SocketProviderProps) {
 			SOCKET_EVENTS.NEW_ROUND,
 			({
 				round,
-				country,
 				countryCode,
 				timeLimit,
 			}: {
