@@ -97,7 +97,6 @@ export function SocketProvider({ children }: SocketProviderProps) {
 	useEffect(() => {
 		socket.on("connect", () => {
 			setIsConnected(true)
-			console.log("connected")
 		})
 		socket.on(SOCKET_EVENTS.DISCONNECTION, () => {
 			setIsConnected(false)
@@ -197,8 +196,6 @@ export function SocketProvider({ children }: SocketProviderProps) {
 				setAnswerFeedback(null)
 				setHasFoundAnswer(false)
 				setWrongAnswers([])
-
-				console.log("new round", country, countryCode, round)
 			},
 		)
 
@@ -306,7 +303,6 @@ export function SocketProvider({ children }: SocketProviderProps) {
 			socket.emit(SOCKET_EVENTS.START_GAME, roomId)
 		},
 		submitAnswer(answer: string) {
-			console.log("submit answer", answer)
 			socket.emit(SOCKET_EVENTS.SUBMIT_ANSWER, { roomId, answer })
 		},
 	}
