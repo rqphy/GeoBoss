@@ -149,12 +149,12 @@ No authentication required:
 1. **Clone the repository**
 
 ```bash
-git clone https://github.com/rqphy/geoboss.git
-cd geoboss
+git clone https://github.com/rqphy/GeoBoss.git
+cd GeoBoss
 
 ```
 
-1. **Install dependencies**
+2. **Install dependencies**
 
 ```bash
 # Server
@@ -167,13 +167,13 @@ npm install
 
 ```
 
-1. **Set up Supabase**
+3. **Set up Supabase**
 
 - Create a new project at [supabase.com](https://supabase.com/)
 - Run the SQL schema from `server/database/schema.sql`
 - Copy your project URL and service key
 
-1. **Configure environment variables**
+4. **Configure environment variables**
 
 ```bash
 # server/.env
@@ -190,7 +190,7 @@ VITE_SERVER_URL=http://localhost:3000
 
 ```
 
-1. **Run the application**
+5. **Run the application**
 
 ```bash
 # Terminal 1 - Server
@@ -203,7 +203,7 @@ npm run dev
 
 ```
 
-1. **Open your browser**
+6. **Open your browser**
    Navigate to `http://localhost:5173`
 
 ## What I Learned
