@@ -13,12 +13,17 @@ import {
 
 export default function Results() {
 	const navigate = useNavigate()
-	const { gameResults, roomId } = useSocket()
+	const { gameResults, roomId, leaveRoom } = useSocket()
 
 	const [first, second, third, ...rest] = gameResults || []
 
 	function restartGame() {
 		navigate(`/lobby/${roomId}`)
+	}
+
+	function returnToHome() {
+		leaveRoom(roomId)
+		navigate(`/`)
 	}
 
 	return (
@@ -73,13 +78,22 @@ export default function Results() {
 						</CardDescription>
 					</Card>
 
-					<Button
-						onClick={restartGame}
-						variant="secondary"
-						className="hover:cursor-pointer mt-6"
-					>
-						Rejouer
-					</Button>
+					<div className="flex gap-2 justify-center">
+						<Button
+							onClick={returnToHome}
+							variant="destructive"
+							className="hover:cursor-pointer mt-6"
+						>
+							Quitter la partie
+						</Button>
+						<Button
+							onClick={restartGame}
+							variant="secondary"
+							className="hover:cursor-pointer mt-6"
+						>
+							Rejouer
+						</Button>
+					</div>
 				</div>
 			</section>
 		</>
