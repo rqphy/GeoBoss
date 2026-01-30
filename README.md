@@ -2,7 +2,7 @@
 
 > A real-time multiplayer geography quiz game with an interactive 3D globe
 
-![GeoBoss](https://juq1maqrjs.ufs.sh/f/r1m4dnkvsK4QAqD9mww48a7oTHYRbPiGlCf2FqW4D9sgeUnX)
+![GeoBoss](https://juq1maqrjs.ufs.sh/f/r1m4dnkvsK4QIzhGlmZXrY8jfHmARMvkSpL0NyuF9IcUTgeQ)
 
 ## The Idea
 
