@@ -120,7 +120,6 @@ export function SocketProvider({ children }: SocketProviderProps) {
 		socket.on(
 			SOCKET_EVENTS.PLAYER_LEFT,
 			({
-				playerId,
 				players,
 				newAdminId,
 			}: {
@@ -130,10 +129,13 @@ export function SocketProvider({ children }: SocketProviderProps) {
 			}) => {
 				setPlayersList(players)
 
-				if (newAdminId && currentPlayer?.id === playerId) {
-					setCurrentPlayer((prev) =>
-						prev ? { ...prev, isAdmin: true } : null,
-					)
+				if (newAdminId) {
+					setCurrentPlayer((prev) => {
+						if (prev && prev.id === newAdminId) {
+							return { ...prev, isAdmin: true }
+						}
+						return prev
+					})
 				}
 			},
 		)
@@ -255,14 +257,11 @@ export function SocketProvider({ children }: SocketProviderProps) {
 		socket.on(
 			SOCKET_EVENTS.BAD_ANSWER,
 			({ playerId, answer }: { playerId: string; answer: string }) => {
-				// Add wrong answer to the list
 				setWrongAnswers((prev) => [...prev, { playerId, answer }])
 
-				// Show feedback for current player
 				setCurrentPlayer((prev) => {
 					if (prev?.id === playerId) {
 						setAnswerFeedback("incorrect")
-						// Clear incorrect feedback after a short delay
 						setTimeout(() => setAnswerFeedback(null), 500)
 					}
 					return prev
@@ -293,7 +292,6 @@ export function SocketProvider({ children }: SocketProviderProps) {
 		},
 		leaveRoom(roomId: string) {
 			socket.emit(SOCKET_EVENTS.LEAVE_ROOM, roomId)
-			// Clear local state
 			setRoomId("")
 			setPlayersList([])
 			setCurrentPlayer(null)
