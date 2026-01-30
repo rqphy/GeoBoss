@@ -9,6 +9,7 @@ export const TINY_COUNTRIES = new Set([
 	"DM", // Dominique
 	"FM", // Micronésie
 	"GD", // Grenade
+	"KI", // Kiribati
 	"KM", // Comores
 	"KN", // Saint-Christophe-et-Niévès
 	"LC", // Sainte-Lucie
