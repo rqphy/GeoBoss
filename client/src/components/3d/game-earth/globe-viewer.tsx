@@ -8,6 +8,13 @@ import { useSocket } from "@/contexts/socket-context"
 import { TINY_COUNTRIES } from "@/constants/countries"
 import gsap from "gsap"
 
+const ISO2_TO_ISO3_FALLBACK: Record<string, string> = {
+	FR: "FRA",
+	NO: "NOR",
+	CY: "CYP",
+	XK: "KOS",
+}
+
 export default function GlobeViewer() {
 	const [features, setFeatures] = useState<Feature[]>([])
 	const [loading, setLoading] = useState(true)
@@ -29,25 +36,36 @@ export default function GlobeViewer() {
 				setLoading(false)
 			})
 	}, [])
-	
+
 	useEffect(() => {
 		setShowMarker(false)
 
 		if (!currentCountryCode || !globeRef.current || features.length === 0)
 			return
 
-		const feature = features.find(
-			(f) => f.properties?.iso_a2 === currentCountryCode
-		)
-		if (!feature) return
+		const iso3Fallback = ISO2_TO_ISO3_FALLBACK[currentCountryCode]
+
+		const feature = features.find((f) => {
+			const iso_a2 = f.properties?.iso_a2
+			const iso_a3 = f.properties?.iso_a3
+			const adm0_a3 = f.properties?.adm0_a3
+
+			return (
+				iso_a2 === currentCountryCode ||
+				(iso3Fallback &&
+					(iso_a3 === iso3Fallback || adm0_a3 === iso3Fallback))
+			)
+		})
+
+		if (!feature) {
+			console.warn(`Country not found in GeoJSON: ${currentCountryCode}`)
+			return
+		}
 
 		const lng = feature.properties?.label_x as number
 		const lat = feature.properties?.label_y as number
 		if (lng === undefined || lat === undefined) return
 
-		// Convert lat/lng to rotation angles
-		// The globe has base rotation of [-Math.PI / 2, 0, -Math.PI / 2]
-		// We need to rotate it so the country faces the camera
 		const targetRotationY = -THREE.MathUtils.degToRad(lng)
 		const targetRotationX = -Math.PI / 2 + THREE.MathUtils.degToRad(lat)
 
@@ -61,12 +79,12 @@ export default function GlobeViewer() {
 	}, [currentCountryCode, features])
 
 	const getColor = (isoCode: string | undefined) => {
-		if (currentCountryCode === isoCode) return 0xff6b35 // Orange for target country
-		return 0xf5ee9e // Default yellow
+		if (currentCountryCode === isoCode) return 0xff6b35
+		return 0xf5ee9e
 	}
 
 	const getOffset = (isoCode: string | undefined) => {
-		if (currentCountryCode === isoCode) return 0.11 // Slight pop for target
+		if (currentCountryCode === isoCode) return 0.13
 		return 0.1
 	}
 
