@@ -77,7 +77,7 @@ export default function Home() {
 
 	return (
 		<div className="relative bg-black">
-			<div className="fixed bottom-0 left-0 w-full h-full">
+			<div className="fixed top-0 left-0 w-full h-full">
 				<Canvas camera={{ fov: 30, position: [6, 0, 0] }}>
 					<Experience />
 				</Canvas>
