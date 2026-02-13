@@ -255,7 +255,7 @@ export default function Home() {
 															)}
 														</div>
 													</td>
-													<td className="px-6 py-4">
+													<td className="px-2 md:px-6 py-4">
 														<div className="flex items-center gap-3">
 															<div
 																className="w-4 h-4 rounded-full border-2 border-secondary/30"
@@ -272,7 +272,7 @@ export default function Home() {
 														</div>
 													</td>
 													<td className="px-6 py-4 text-center">
-														<span className="text-secondary font-bold text-lg">
+														<span className="text-secondary font-bold text-sm md:text-lg">
 															{
 																entry.winning_score
 															}
