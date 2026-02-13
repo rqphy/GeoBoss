@@ -10,11 +10,17 @@ const app = express()
 const httpServer = createServer(app)
 const io = new Server(httpServer, {
 	cors: {
-		origin: config.clientUrl || "http://localhost:5173",
+		origin: config.nodeEnv === "development" ? "*" : config.clientUrl,
+		credentials: true,
 	},
 })
 
-app.use(cors())
+app.use(
+	cors({
+		origin: config.nodeEnv === "development" ? "*" : config.clientUrl,
+		credentials: true,
+	})
+)
 app.use(express.json())
 
 app.use("/api", apiRoutes)
@@ -22,6 +28,7 @@ app.use("/api", apiRoutes)
 initializeSocketHandlers(io)
 
 const PORT = config.port || 3000
-httpServer.listen(PORT, () => {
-	console.log(`Server running on port ${PORT}`)
+const HOST = "0.0.0.0"
+httpServer.listen(PORT, HOST, () => {
+	console.log(`Server running on ${HOST}:${PORT}`)
 })

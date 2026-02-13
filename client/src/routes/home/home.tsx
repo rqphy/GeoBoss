@@ -77,7 +77,7 @@ export default function Home() {
 
 	return (
 		<div className="relative bg-black">
-			<div className="fixed bottom-0 left-0 w-full h-full">
+			<div className="fixed top-0 left-0 w-full h-full">
 				<Canvas camera={{ fov: 30, position: [6, 0, 0] }}>
 					<Experience />
 				</Canvas>
@@ -255,7 +255,7 @@ export default function Home() {
 															)}
 														</div>
 													</td>
-													<td className="px-6 py-4">
+													<td className="px-2 md:px-6 py-4">
 														<div className="flex items-center gap-3">
 															<div
 																className="w-4 h-4 rounded-full border-2 border-secondary/30"
@@ -272,7 +272,7 @@ export default function Home() {
 														</div>
 													</td>
 													<td className="px-6 py-4 text-center">
-														<span className="text-secondary font-bold text-lg">
+														<span className="text-secondary font-bold text-sm md:text-lg">
 															{
 																entry.winning_score
 															}

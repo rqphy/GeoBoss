@@ -40,8 +40,8 @@ export default function CreateRoomModal({
 			return
 		}
 
-		if (username.trim().length < 2) {
-			setError("Le nom doit contenir au moins 2 caractères")
+		if (username.trim().length < 3) {
+			setError("Le nom doit contenir au moins 3 caractères")
 			return
 		}
 
